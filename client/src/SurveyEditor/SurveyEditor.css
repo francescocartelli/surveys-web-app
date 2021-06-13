@@ -44,3 +44,9 @@
     margin-left: 0em !important;
     margin-right: 0em !important;
 }
+
+.suggestion-text {
+    color: #606060;
+    font-style: italic;
+    margin-bottom: 0.5em;
+}
