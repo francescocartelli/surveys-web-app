@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Button, Form, FormControl } from 'react-bootstrap'
-import { PencilFill, TrashFill, CheckCircleFill, PlusCircleFill, DashCircleFill, XCircleFill } from 'react-bootstrap-icons'
+import { PencilFill, TrashFill, CheckCircleFill, PlusCircleFill, DashCircleFill, XCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
 import './SurveyEditor.css'
 
 function SurveyEditor(props) {
@@ -13,7 +13,7 @@ function SurveyEditor(props) {
     const [questId, setQuestId] = useState(0)
 
     const addQuestion = () => {
-        setQuestions([...questions, { id: questId + 1, text: "", answers: [], min: 1, max: 1 }])
+        setQuestions([...questions, { id: questId + 1, text: "", type: 0, answers: [], min: 1, max: 1 }])
         setQuestId(i => i + 1)
     }
 
@@ -22,6 +22,10 @@ function SurveyEditor(props) {
         newQuestions.splice(question, 1)
         setQuestions(newQuestions)
     }
+
+    useEffect(() => {
+        // alert(JSON.stringify(questions))
+    }, [questions])
 
     return (
         <Container fluid>
@@ -55,6 +59,7 @@ function SurveyEditor(props) {
                         position={i}
                         question={question}
                         setQuestions={setQuestions}
+                        isLast={i === questions.length - 1}
                         removeQuestion={() => removeQuestion(i)}>
                     </Question>
                 })
@@ -65,6 +70,7 @@ function SurveyEditor(props) {
 
 function Question(props) {
     const [text, setText] = useState(props.question.text)
+    const [type, setType] = useState(props.question.type)
     const [answers, setAnswers] = useState(props.question.answers)
     const [min, setMin] = useState(props.question.min)
     const [max, setMax] = useState(props.question.max)
@@ -90,18 +96,39 @@ function Question(props) {
         props.setQuestions(prevQuestions => {
             return prevQuestions.map((q, i) => {
                 return i === props.position ?
-                    { id: props.question.id, text: text, answers: answers, min: min, max: max } : q
+                    { id: props.question.id, text: text, type: type, answers: answers, min: min, max: max } : q
             })
         })
     }
 
     const discardChanges = () => {
         setText(props.question.text)
+        setType(props.question.type)
         setAnswers(props.question.answers)
         setMin(props.question.min)
         setMax(props.question.max)
         setIsEdit(false)
         setNewAnswerText("")
+    }
+
+    const moveUp = () => {
+        props.setQuestions(prevQuestions => {
+            return prevQuestions.map((q, i) => {
+                if (i === props.position - 1) return prevQuestions[props.position]
+                else if (i === props.position) return prevQuestions[props.position - 1]
+                else return q
+            })
+        })
+    }
+
+    const moveDown = () => {
+        props.setQuestions(prevQuestions => {
+            return prevQuestions.map((q, i) => {
+                if (i === props.position) return prevQuestions[props.position + 1]
+                else if (i === props.position + 1) return prevQuestions[props.position]
+                else return q
+            })
+        })
     }
 
     return (
@@ -133,50 +160,85 @@ function Question(props) {
                                 </Button>
                             </Col>
                         </> :
-                        <Col xs="auto" className="pl-1 pr-0">
-                            <Button onClick={() => setIsEdit(!isEdit)}>
-                                <PencilFill />
-                            </Button>
-                        </Col>
+                        <>
+                            {
+                                props.position !== 0 &&
+                                <Col xs="auto" className="pl-1 pr-0">
+                                    <Button onClick={() => { moveUp() }}>
+                                        <ArrowUpCircleFill />
+                                    </Button>
+                                </Col>
+                            }
+                            {
+                                !props.isLast &&
+                                <Col xs="auto" className="pl-1 pr-0">
+                                    <Button onClick={() => { moveDown() }}>
+                                        <ArrowDownCircleFill />
+                                    </Button>
+                                </Col>
+                            }
+
+                            <Col xs="auto" className="pl-1 pr-0">
+                                <Button onClick={() => setIsEdit(!isEdit)}>
+                                    <PencilFill />
+                                </Button>
+                            </Col>
+                        </>
                 }
                 <Col xs="auto" className="pl-1 pr-0">
                     <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
                 </Col>
             </Row>
-            {/* Answers */}
+            {/* Question Type */}
             {
                 isEdit &&
                 <>
                     <hr></hr>
                     <Col xs="12" className="suggestion-text">Question type:</Col>
+                    <Col xs="12">
+                        <Form.Control as="select" onChange={
+                            (ev) => {
+                                if ("Short Text" === ev.target.value) setType(1)
+                                else setType(0)
+                            }
+                        }>
+                            <option>Multiple Choice</option>
+                            <option>Short Text</option>
+                        </Form.Control>
+                    </Col>
                 </>
             }
+            {/* Answers */}
             {
-                isEdit &&
+                isEdit && type === 0 &&
                 <>
                     <hr></hr>
                     <Col xs="12" className="suggestion-text">Answers:</Col>
                 </>
             }
             {
-                answers.map((answer, i) => {
-                    return <Row key={i} className="answer-row">
-                        <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
-                        <Col><p>{answer.text}</p></Col>
-                        {
-                            isEdit &&
-                            <Col xs="auto" className="pr-0">
-                                <Button onClick={() => { removeAnswer(i) }}>
-                                    <DashCircleFill></DashCircleFill>
-                                </Button>
-                            </Col>
-                        }
-                    </Row>
-                })
+                type === 0 ?
+                    answers.map((answer, i) => {
+                        return <Row key={i} className="answer-row">
+                            <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
+                            <Col><p>{answer.text}</p></Col>
+                            {
+                                isEdit &&
+                                <Col xs="auto" className="pr-0">
+                                    <Button onClick={() => { removeAnswer(i) }}>
+                                        <DashCircleFill></DashCircleFill>
+                                    </Button>
+                                </Col>
+                            }
+                        </Row>
+                    }) :
+                    <Col xs="12" className="pt-1">
+                        <Form.Control readOnly as="textarea" rows={3} placeholder="Short text answer here..." />
+                    </Col>
             }
             {/* Add answers */}
             {
-                isEdit &&
+                isEdit && type === 0 &&
                 <>
                     <Row className="new-answer-row">
                         <Col xs="auto" className="pl-0 pr-0">
@@ -194,10 +256,13 @@ function Question(props) {
                     </Row>
                     <hr></hr>
                     {/* Advanced Setting */}
-                    <MinMaxEditor AnswersNumber={answers.length} min={min} max={max} setMin={setMin} setMax={setMax}></MinMaxEditor>
+                    {
+                        type === 0 &&
+                        <MinMaxEditor AnswersNumber={answers.length} min={min} max={max} setMin={setMin} setMax={setMax}></MinMaxEditor>
+                    }
                 </>
             }
-        </Container>
+        </Container >
     )
 }
 
