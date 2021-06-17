@@ -4,16 +4,19 @@ import { PencilFill, TrashFill, CheckCircleFill, PlusCircleFill, DashCircleFill,
 import './SurveyEditor.css'
 
 function SurveyEditor(props) {
+    /* These 2 states are the survey state that are sent into the
+       database once the submit is performed */
     const [surveyTitle, setSurveyTitle] = useState(props.survey.title)
     const [questions, setQuestions] = useState([])
+
     const [isEditTitle, setIsEditTitle] = useState(false)
 
     /* QuestId is a unique id registered for each question in this client */
     /* It's used to avoid deletion error */
     const [questId, setQuestId] = useState(0)
 
-    const addQuestion = () => {
-        setQuestions([...questions, { id: questId + 1, text: "", type: 0, answers: [], min: 1, max: 1 }])
+    const addQuestion = (newQuestion) => {
+        setQuestions([...questions, newQuestion])
         setQuestId(i => i + 1)
     }
 
@@ -24,7 +27,7 @@ function SurveyEditor(props) {
     }
 
     useEffect(() => {
-        // alert(JSON.stringify(questions))
+        //alert(JSON.stringify(questions))
     }, [questions])
 
     return (
@@ -47,19 +50,15 @@ function SurveyEditor(props) {
                     </Button>
                 </Col>
             </Row>
-            <Row className="p-2">
-                <Col>
-                    <Button onClick={() => addQuestion()}>Add Question</Button>
-                </Col>
-            </Row>
+            <EditPanel addQuestion={addQuestion}></EditPanel>
             {
                 questions.map((question, i) => {
                     return <Question
                         key={question.id}
                         position={i}
                         question={question}
-                        setQuestions={setQuestions}
                         isLast={i === questions.length - 1}
+                        setQuestions={setQuestions}
                         removeQuestion={() => removeQuestion(i)}>
                     </Question>
                 })
@@ -68,18 +67,28 @@ function SurveyEditor(props) {
     )
 }
 
-function Question(props) {
-    const [text, setText] = useState(props.question.text)
-    const [type, setType] = useState(props.question.type)
-    const [answers, setAnswers] = useState(props.question.answers)
-    const [min, setMin] = useState(props.question.min)
-    const [max, setMax] = useState(props.question.max)
-    const [isEdit, setIsEdit] = useState(false)
+function EditPanel(props) {
+    const [text, setText] = useState("")
+    const [type, setType] = useState(0)
+    const [answers, setAnswers] = useState([])
+    const [min, setMin] = useState(0)
+    const [max, setMax] = useState(0)
+
     const [newAnswerText, setNewAnswerText] = useState("")
+
+    const submitQuestion = () => {
+        props.addQuestion({
+            text: text,
+            type: type,
+            answers: answers,
+            min: min,
+            max: max
+        })
+        resetQuestion()
+    }
 
     const addAnswer = () => {
         setAnswers([...answers, { text: newAnswerText }])
-        /* Empty the input text when answer is added */
         setNewAnswerText("")
     }
 
@@ -89,28 +98,104 @@ function Question(props) {
         setAnswers(newAnswers)
     }
 
-    /* When edit is confirmed question is set into the parent state component */
-    const submitQuestion = () => {
-        /* Edit mode is reset */
-        setIsEdit(!isEdit)
-        props.setQuestions(prevQuestions => {
-            return prevQuestions.map((q, i) => {
-                return i === props.position ?
-                    { id: props.question.id, text: text, type: type, answers: answers, min: min, max: max } : q
-            })
-        })
-    }
-
-    const discardChanges = () => {
-        setText(props.question.text)
-        setType(props.question.type)
-        setAnswers(props.question.answers)
-        setMin(props.question.min)
-        setMax(props.question.max)
-        setIsEdit(false)
+    const resetQuestion = () => {
+        setText("")
+        setType(0)
+        setAnswers([])
+        setMin(0)
+        setMax(0)
         setNewAnswerText("")
     }
 
+    return (
+        <Container fluid className="question-container">
+            {/* Question Header */}
+            <Col xs="12" className="suggestion-text">Question:</Col>
+            <Row className="question-row">
+                <Col>
+                    {
+                        <Form.Control
+                            type="input"
+                            placeholder="Enter question sentence here..."
+                            value={text}
+                            onInput={(ev) => setText(ev.target.value)} />
+                    }
+                </Col>
+            </Row>
+            {/* Question Type */}
+            <hr></hr>
+            <Col xs="12" className="suggestion-text">Question type:</Col>
+            <Col xs="12">
+                <Form.Control as="select" onChange={
+                    (ev) => {
+                        if ("Short Text" === ev.target.value) setType(1)
+                        else setType(0)
+                    }
+                }>
+                    <option>Multiple Choice</option>
+                    <option>Short Text</option>
+                </Form.Control>
+            </Col>
+            {/* Answers */}
+            <hr></hr>
+            <Col xs="12" className="suggestion-text">Answers:</Col>
+            {
+                type === 0 ?
+                    answers.map((answer, i) => {
+                        return <Row key={i} className="answer-row">
+                            <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
+                            <Col><p>{answer.text}</p></Col>
+                            <Col xs="auto" className="pr-0">
+                                <Button onClick={() => { removeAnswer(i) }}>
+                                    <DashCircleFill></DashCircleFill> Remove Answer
+                                </Button>
+                            </Col>
+                        </Row>
+                    }) :
+                    <Col xs="12" className="pt-1">
+                        <Form.Control readOnly as="textarea" rows={3} placeholder="Short text answer here..." />
+                    </Col>
+            }
+            {/* Add answers */}
+            {
+                type === 0 &&
+                <>
+                    <Row className="new-answer-row">
+                        <Col xs="auto" className="pl-0 pr-0">
+                            <Button className="button" onClick={addAnswer}>
+                                <PlusCircleFill />
+                            </Button>
+                        </Col>
+                        <Col className="pr-0">
+                            <FormControl
+                                type="input"
+                                placeholder="Enter new answer here"
+                                value={newAnswerText}
+                                onInput={(ev) => setNewAnswerText(ev.target.value)}></FormControl>
+                        </Col>
+                    </Row>
+                    <hr></hr>
+                    {/* Advanced Setting */}
+                    {
+                        type === 0 &&
+                        <MinMaxEditor AnswersNumber={answers.length} min={min} max={max} setMin={setMin} setMax={setMax}></MinMaxEditor>
+                    }
+                </>
+            }
+            <hr></hr>
+            <Row className="p-2">
+                <Col xs="6">
+                    <Button onClick={() => submitQuestion()}>Add Question</Button>
+                </Col>
+                <Col xs="6">
+                    <Button onClick={() => resetQuestion()}>Reset Question</Button>
+                </Col>
+            </Row>
+        </Container >
+    )
+}
+
+function Question(props) {
     const moveUp = () => {
         props.setQuestions(prevQuestions => {
             return prevQuestions.map((q, i) => {
@@ -136,131 +221,38 @@ function Question(props) {
             {/* Question Header */}
             <Row className="question-row">
                 <div className="number-box">{props.position + 1}</div>
-                <Col>
-                    {
-                        isEdit ? <Form.Control
-                            type="input"
-                            placeholder="Enter question here"
-                            value={text}
-                            onInput={(ev) => setText(ev.target.value)} /> :
-                            <p className="pt-2">{text}</p>
-                    }
-                </Col>
+                <Col><p className="pt-2">{props.question.text}</p></Col>
                 {
-                    isEdit ?
-                        <>
-                            <Col xs="auto" className="pl-1 pr-0">
-                                <Button variant="success" onClick={() => submitQuestion()}>
-                                    <CheckCircleFill />
-                                </Button>
-                            </Col>
-                            <Col xs="auto" className="pl-1 pr-0">
-                                <Button variant="warning" onClick={() => discardChanges()}>
-                                    <XCircleFill />
-                                </Button>
-                            </Col>
-                        </> :
-                        <>
-                            {
-                                props.position !== 0 &&
-                                <Col xs="auto" className="pl-1 pr-0">
-                                    <Button onClick={() => { moveUp() }}>
-                                        <ArrowUpCircleFill />
-                                    </Button>
-                                </Col>
-                            }
-                            {
-                                !props.isLast &&
-                                <Col xs="auto" className="pl-1 pr-0">
-                                    <Button onClick={() => { moveDown() }}>
-                                        <ArrowDownCircleFill />
-                                    </Button>
-                                </Col>
-                            }
-
-                            <Col xs="auto" className="pl-1 pr-0">
-                                <Button onClick={() => setIsEdit(!isEdit)}>
-                                    <PencilFill />
-                                </Button>
-                            </Col>
-                        </>
+                    props.position !== 0 &&
+                    <Col xs="auto" className="pl-1 pr-0">
+                        <Button onClick={() => { moveUp() }}>
+                            <ArrowUpCircleFill />
+                        </Button>
+                    </Col>
+                }
+                {
+                    !props.isLast &&
+                    <Col xs="auto" className="pl-1 pr-0">
+                        <Button onClick={() => { moveDown() }}>
+                            <ArrowDownCircleFill />
+                        </Button>
+                    </Col>
                 }
                 <Col xs="auto" className="pl-1 pr-0">
                     <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
                 </Col>
             </Row>
-            {/* Question Type */}
             {
-                isEdit &&
-                <>
-                    <hr></hr>
-                    <Col xs="12" className="suggestion-text">Question type:</Col>
-                    <Col xs="12">
-                        <Form.Control as="select" onChange={
-                            (ev) => {
-                                if ("Short Text" === ev.target.value) setType(1)
-                                else setType(0)
-                            }
-                        }>
-                            <option>Multiple Choice</option>
-                            <option>Short Text</option>
-                        </Form.Control>
-                    </Col>
-                </>
-            }
-            {/* Answers */}
-            {
-                isEdit && type === 0 &&
-                <>
-                    <hr></hr>
-                    <Col xs="12" className="suggestion-text">Answers:</Col>
-                </>
-            }
-            {
-                type === 0 ?
-                    answers.map((answer, i) => {
+                props.question.type === 0 ?
+                    props.question.answers.map((answer, i) => {
                         return <Row key={i} className="answer-row">
                             <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
                             <Col><p>{answer.text}</p></Col>
-                            {
-                                isEdit &&
-                                <Col xs="auto" className="pr-0">
-                                    <Button onClick={() => { removeAnswer(i) }}>
-                                        <DashCircleFill></DashCircleFill>
-                                    </Button>
-                                </Col>
-                            }
                         </Row>
                     }) :
                     <Col xs="12" className="pt-1">
                         <Form.Control readOnly as="textarea" rows={3} placeholder="Short text answer here..." />
                     </Col>
-            }
-            {/* Add answers */}
-            {
-                isEdit && type === 0 &&
-                <>
-                    <Row className="new-answer-row">
-                        <Col xs="auto" className="pl-0 pr-0">
-                            <Button className="button" onClick={addAnswer}>
-                                <PlusCircleFill />
-                            </Button>
-                        </Col>
-                        <Col className="pr-0">
-                            <FormControl
-                                type="input"
-                                placeholder="Enter new answer here"
-                                value={newAnswerText}
-                                onInput={(ev) => setNewAnswerText(ev.target.value)}></FormControl>
-                        </Col>
-                    </Row>
-                    <hr></hr>
-                    {/* Advanced Setting */}
-                    {
-                        type === 0 &&
-                        <MinMaxEditor AnswersNumber={answers.length} min={min} max={max} setMin={setMin} setMax={setMax}></MinMaxEditor>
-                    }
-                </>
             }
         </Container >
     )

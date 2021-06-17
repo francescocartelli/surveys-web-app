@@ -1,0 +1,67 @@
+.title-container {
+    padding: 2em 0 2em 0 !important;
+}
+
+.title {
+    font-size: 2em;
+    font-weight: 300;
+    margin-bottom: 0px;
+}
+
+.title strong {
+    font-size: 1.75em;
+    font-weight: 500;
+    color: #2C94CF;
+}
+
+.subtitle {
+    color: #808080;
+    font-weight: 400;
+    font-size: 1.2em;
+}
+
+.surveys-list {
+    padding-top: 1em;
+}
+
+.card-body {
+    background-color: #FFFFFF;
+    border-radius: 0.5em;
+    border: solid 1px #D0D0D0;
+    margin: 2em 0 2em 0;
+    padding: 1em 1em 0.5em 1em !important;
+}
+
+.card-body h2 {
+    color: #202020;
+    font-size: 1.5em;
+    color: #202020;
+    font-weight: 500;
+    margin-bottom: 0em !important;
+}
+
+.card-body p {
+    font-size: 1em;
+    color: #808080;
+}
+
+.card-body span {
+    font-size: 0.9em;
+    font-style: italic;
+    color: #808080;
+    font-weight: 300;
+    margin: -0.5em 0 0 0;
+}
+
+.card-body hr {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.card-body span strong {
+    font-weight: 600;
+}
+
+.large-button {
+    width: 100%;
+}

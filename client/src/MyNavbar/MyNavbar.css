@@ -1,0 +1,24 @@
+.nav-container {
+    background-color: #195995;
+}
+
+.navbar-brand {
+    font-size: 1rem !important;
+    font-weight: 600;
+}
+
+.form-control-dark {
+    background-color: rgba(255, 255, 255, .1) !important;
+    border-color: rgba(255, 255, 255, .1) !important;
+}
+
+.form-control-dark:focus {
+    border-color: transparent !important;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .25) !important;
+    background-color: rgb(255, 255, 255) !important;
+}
+
+.drop-btn {
+    background-color: #195995 !important;
+    border: transparent !important;
+}
