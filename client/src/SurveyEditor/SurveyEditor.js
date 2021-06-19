@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
+import DayJs from 'react-dayjs'
 import { Container, Row, Col, Button, Form, FormControl, Alert, InputGroup, Modal } from 'react-bootstrap'
 import { HashLink } from 'react-router-hash-link'
 import { useHistory } from 'react-router-dom'
 import { PencilFill, TrashFill, CheckCircleFill, PlusCircleFill, DashCircleFill, XCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
 import './SurveyEditor.css'
+import dayjs from 'dayjs'
+
+
 
 function SurveyEditor(props) {
     /* These 2 states are the survey state that are sent into the
@@ -24,13 +28,20 @@ function SurveyEditor(props) {
         setQuestions(newQuestions)
     }
 
-    const publishSurvey = () => {
-        const survey = { title: surveyTitle, questions: questions }
-        alert(JSON.stringify(survey))
+    const publishSurvey = async () => {
+        const response = await fetch('/api/survey', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify({ title: surveyTitle, questions: questions, pubdate: dayjs()})
+        })
+
+        if (!response.ok) {
+            throw new Error(JSON.stringify({ status: response.status, error: response.important }))
+        }
     }
 
     useEffect(() => {
-        //alert(JSON.stringify(questions))
+        // alert(JSON.stringify(questions))
     }, [questions])
 
     return (

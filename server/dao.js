@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
-const sqlite = require('sqlite3');
+const sqlite = require('sqlite3')
 // const bcrypt = require('bcrypt');
 
 // open the database
-const db = new sqlite.Database('tasks.db', (err) => { if (err) throw err; });
+const db = new sqlite.Database('surveys.db', (err) => { if (err) throw err })
 
-// Get all tasks
-exports.getAllTasks = (user_id) => {
-  const SQL_GETALLTASKS = 'SELECT * FROM tasks WHERE USER=?';
+// Get all surveys
+exports.getSurveys = () => {
+  const sql_getSurveys = 'SELECT * FROM survey'
 
   return new Promise((resolve, reject) => {
-    db.all(SQL_GETALLTASKS, [user_id], (err, rows) => {
+    db.all(sql_getSurveys, [], (err, rows) => {
       if (err)
         reject(err);
       else if (rows === undefined)
@@ -19,131 +19,74 @@ exports.getAllTasks = (user_id) => {
       else {
         resolve(rows);
       }
-    });
-  });
-}
-
-
-// Get task by id
-exports.getTaskById = (id, user_id) => {
-
-  const SQL_GETBYID = 'SELECT * FROM tasks WHERE id=? and USER=?';
-
-  return new Promise((resolve, reject) => {
-    db.get(SQL_GETBYID, [id, user_id], (err, row) => {
-      if (err)
-        reject(err);
-      else if (row === undefined)
-        reject({ error: 'Invalid task ID!' });
-      else {
-        const task = {
-          id: row.id, description: row.description, important: row.important,
-          private: row.private, deadline: row.deadline, completed: row.completed,
-          user: row.user
-        };
-        resolve(task);
-      }
-    });
-  });
-}
-
-// Get tasks
-exports.getTasks = (properties, user_id) => {
-  let SQL_QUERY = 'SELECT * FROM tasks where USER=?'
-  let values = []
-
-  Object.keys(properties).forEach((property, i) => {
-    if (property === 'minDeadline')
-      SQL_QUERY += ' AND deadline>=?'
-    else if (property === 'maxDeadline')
-      SQL_QUERY += ' AND deadline<=?'
-    else
-      SQL_QUERY += ' AND ' + property + "=?"
-
-    values.push(properties[property])
+    })
   })
+}
+
+const getIdSurvey = () => {
+  const sql_getId = "select max(id) as num from Survey"
+  return new Promise((resolve, reject) => {
+    db.get(sql_getId, [], (err, row) => {
+      if (err) reject(err)
+      else if (row === undefined) reject(err)
+      else resolve(row.num)
+    })
+  })
+}
+
+const getIdQuerstion = () => {
+  const sql_getId = "select max(id) as num from Question"
+  return new Promise((resolve, reject) => {
+    db.get(sql_getId, [], (err, row) => {
+      if (err) reject(err)
+      else if (row === undefined) reject(err)
+      else resolve(row.num)
+    })
+  })
+}
+
+exports.insertSurvey = async (survey) => {
+  const surveyId = await getIdSurvey() + 1
+  const sql_query = "INSERT INTO Survey(id, title, pubdate) VALUES(?, ?, ?)"
 
   return new Promise((resolve, reject) => {
-    db.all(SQL_QUERY, [user_id, ...values], (err, rows) => {
-      if (err) {
-        reject(err);
-      } else if (rows === undefined) {
-        reject({ error: "No such tasks with specified properties!" })
+    db.run(sql_query, [surveyId, survey.title, survey.pubdate], (error) => {
+      if (error) {
+        reject(error)
       } else {
-        resolve(rows)
+        resolve(surveyId)
       }
     })
   })
 }
 
+exports.insertQuestion = async (idSurvey, question) => {
+  const idQuestion = await getIdQuerstion() + 1
 
-//insertNewTask
-exports.createTask = (desc, important, priv, pdeadline, completed, user) => {
-  const SQL_INSERT = 'INSERT INTO TASKS ' +
-    '(ID, DESCRIPTION, IMPORTANT, PRIVATE, DEADLINE, COMPLETED, USER) ' +
-    'VALUES ((SELECT MAX(ID)+1 FROM TASKS), ?, ?, ?, ?, ?, ?)';
+  const sql_query = "INSERT INTO Question(id, idSurvey, text, type, min, max) VALUES (?, ?, ?, ?, ?, ?)"
   return new Promise((resolve, reject) => {
-    let deadline = pdeadline;
-    if (!pdeadline)
-      deadline = null;
-    db.run(SQL_INSERT, [desc, important, priv, deadline, completed, user], (error) => {
+    db.run(sql_query, [idQuestion, idSurvey, question.text, question.type, question.min, question.max], (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(idQuestion)
+      }
+    })
+  })
+}
+
+exports.insertAnswer = async (idQuestion, answer) => {
+  const sql_query = "INSERT INTO Answer(idQuestion, text) VALUES (?, ?)"
+
+  return new Promise((resolve, reject) => {
+    db.run(sql_query, [idQuestion, answer.text], (error) => {
       if (error) {
         reject(error);
       } else {
         resolve(true)
       }
-
-    });
-  });
-}
-
-
-//updateTask
-exports.updateTask = (id, desc, important, priv, pdeadline, completed, user) => {
-  const SQL_UPDATE = 'UPDATE TASKS SET' +
-    ' DESCRIPTION=?, IMPORTANT=?, PRIVATE=?, DEADLINE=?, COMPLETED=?, USER=? ' +
-    ' WHERE ID=?';
-
-  return new Promise((resolve, reject) => {
-    let deadline = pdeadline;
-    if (!pdeadline)
-      deadline = null;
-    db.run(SQL_UPDATE, [desc, important, priv, deadline, completed, user, id], (err) => {
-      if (err)
-        reject(err);
-      else
-        resolve(true);
     })
-  });
-}
-
-//markTask
-exports.markTask = (id, completed, user_id) => {
-  const SQL_MARK = 'UPDATE TASKS SET COMPLETED=? WHERE USER=? AND ID=?';
-
-  return new Promise((resolve, reject) => {
-    db.run(SQL_MARK, [completed, user_id, id], (err) => {
-      if (err)
-        reject(err);
-      else
-        resolve(true);
-    })
-  });
-}
-
-//deleteTask
-exports.deleteTask = (id, user_id) => {
-  const SQL_DELETE = 'DELETE FROM TASKS WHERE ID=? AND USER=?';
-
-  return new Promise((resolve, reject) => {
-    db.run(SQL_DELETE, [id, user_id], (err) => {
-      if (err)
-        reject(err);
-      else
-        resolve(true);
-    })
-  });
-
+  })
 }
 
 //user validation
