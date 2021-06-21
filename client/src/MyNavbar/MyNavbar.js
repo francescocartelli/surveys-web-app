@@ -1,5 +1,5 @@
-import { Navbar, Dropdown } from 'react-bootstrap';
-import { PersonCircle, BoxArrowRight, CardList } from "react-bootstrap-icons";
+import { Navbar, Dropdown } from 'react-bootstrap'
+import { PersonCircle, BoxArrowRight, CardList } from "react-bootstrap-icons"
 import './MyNavbar.css'
 
 const appName = '.surveys';

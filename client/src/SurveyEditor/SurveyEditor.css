@@ -62,6 +62,13 @@
     padding-top: 6px;
 }
 
+.suggestion-text-small {
+    color: #606060;
+    font-size: 0.9em;
+    font-style: italic;
+    margin: 0 1em 0.5em 1em !important;
+}
+
 .button-wide {
     width: 100%;
 }

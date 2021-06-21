@@ -34,6 +34,20 @@ async function publishSurvey(surveyTitle, questions, pubdate) {
     }
 }
 
-const API = { getSurveys, getSurvey, publishSurvey }
+async function submitUserAnswers(questions, userAnswers) {
+    const response = await fetch('/api/answers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({ questions: questions, userAnswers: userAnswers })
+    })
+
+    throw new Error("Something went wrong in answers submission.")
+
+    if (!response.ok) {
+        throw new Error("Something went wrong in answers submission.")
+    }
+}
+
+const API = { getSurveys, getSurvey, publishSurvey, submitUserAnswers }
 
 export default API

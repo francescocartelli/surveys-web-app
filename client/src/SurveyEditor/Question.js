@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react'
-import { Container, Row, Col, Button, Form, FormControl, Alert, InputGroup } from 'react-bootstrap'
-import { PencilFill, TrashFill, CheckCircleFill, PlusCircleFill, DashCircleFill, XCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
+import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
+import { ExclamationCircleFill, CheckCircleFill } from 'react-bootstrap-icons'
 import './SurveyEditor.css'
 
 function QuestionHeader(props) {
+    // props.hint show or hides the error or correct icon
     return (
         <Row className="question-row">
             <div className="number-box">{props.number}</div>
-            <Col><p className="pt-2">{props.text}</p></Col>
-            {props.error && <Col xs={12} className="suggestion-text">{props.error}</Col>}
+            <Col><p className="pt-2 mb-0">{props.text}</p></Col>
+            {props.hint && <Col xs="auto" className="pr-3 pt-2"> {
+                props.error ?
+                    <ExclamationCircleFill size="24" color="orange" /> :
+                    <CheckCircleFill size="24" color="green" />
+            }
+            </Col>
+            }
         </Row>
     )
 }
@@ -17,33 +24,22 @@ function ClosedQuestion(props) {
     // This useState contains the ids of the checked answers
     // when this change the state is sent into the survey userAnswers state
     const [checked, setChecked] = useState([])
-    const [error, setError] = useState("")
+    // Is used only for max answers overloading
+    const [message, setMessage] = useState("")
 
     /* Handle form multiple choice */
     const updateUserAnswers = (answerId, ev) => {
         const value = ev.target.checked
-        let errorMessage = ""
+        let newMessage = ""
         if (value === true) {
-            // If value is true -> add the answers into the checked answers
+            // If true max answers will be overloaded, stop action, do not change state
             if (Number(checked.length) >= Number(props.question.max)) {
                 // Check if user will raise the max answers limit
                 ev.preventDefault()
-                errorMessage += "Maximum number of answers reached. Deselect some.\n"
-            } else {
-                setChecked(p => [...p, answerId])
-            }
-
-            if (Number(checked.length + 1) < Number(props.question.min))
-                errorMessage += "This question require " + props.question.min + " answers."
-
-            setError(errorMessage)
+                newMessage += "Maximum number of answers reached. Deselect some if you want to change answers."
+                setMessage(newMessage)
+            } else setChecked(p => [...p, answerId])
         } else {
-            if (Number(checked.length - 1) < Number(props.question.min))
-                errorMessage += "This question require " + props.question.min + " answers."
-
-            setError(errorMessage)
-
-            // If value is false -> remove the answers from the checked answers
             setChecked(p => p.filter(item => item !== answerId))
         }
     }
@@ -53,17 +49,33 @@ function ClosedQuestion(props) {
         if (ev.target.checked) setChecked(p => [answerId])
     }
 
+    // This is a callback that aligns the value of this answered question
+    // to the survey form userAnswers useEffect
+    const updateParent = props.setUserAnswers
     useEffect(() => {
-        props.setUserAnswers(prev => {
-            return prev.map((q, i) => {
-                return props.number === i ? checked : q
+        updateParent(prev => {
+            return prev.map(userAnswer => {
+                return userAnswer.id === props.question.id ?
+                    { id: props.question.id, type: props.question.type, values: checked } : userAnswer
             })
         })
-    }, [checked])
+    }, [checked, updateParent, props.question.id, props.question.type])
 
     return (
         <Container fluid className="question-container">
-            <QuestionHeader number={props.number + 1} text={props.question.text} error={error}></QuestionHeader>
+            <QuestionHeader
+                number={props.number + 1}
+                text={props.question.text}
+                error={checked.length < props.question.min}
+                hint={true}></QuestionHeader>
+            {
+                props.question.min !== 0 &&
+                <Row className="suggestion-text-small"><Col xs="12">Minumun of {props.question.min} answers required.</Col></Row>
+            }
+            {
+                message &&
+                <Row className="suggestion-text-small"><Col xs="12">{message}</Col></Row>
+            }
             <Row>
                 <InputGroup>
                     {
@@ -97,15 +109,18 @@ function ClosedQuestion(props) {
 // Open-ended question
 function OpenQuestion(props) {
     const [value, setValue] = useState("")
-    const [error, setError] = useState("")
 
+    // This is a callback that aligns the value of this answered question
+    // to the survey form userAnswers useEffect
+    const updateParent = props.setUserAnswers
     useEffect(() => {
-        props.setUserAnswers(prev => {
-            return prev.map((q, i) => {
-                return props.number === i ? value : q
+        updateParent(prev => {
+            return prev.map(userAnswer => {
+                return userAnswer.id === props.question.id ?
+                    { id: props.question.id, type: props.question.type, values: value } : userAnswer
             })
         })
-    }, [value])
+    }, [value, updateParent, props.question.id, props.question.type])
 
     return (
         <Container fluid className="question-container">
