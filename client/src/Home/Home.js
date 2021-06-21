@@ -1,10 +1,21 @@
+import { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap'
-import { Link, Router } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './Home.css'
 
-const appName = 'Surveys';
+import API from '../API'
 
 function Home(props) {
+    const [allSurveys, setAllSurveys] = useState([])
+
+    useEffect(() => {
+        API.getSurveys().then(s => {
+            setAllSurveys(s)
+        }).catch(err => {
+            console.log(err.message)
+        })
+    }, [])
+
     return (
         <div className="bg-light vh-100">
             <div className="text-center title-container bg-white">
@@ -14,18 +25,11 @@ function Home(props) {
                 </p>
             </div>
             <Container className="surveys-list">
-                    <SurveyCard survey={{
-                        id: 1,
-                        title: "What is the most annoying thing on work?",
-                        creator: "admin",
-                        date: "2021/06/03 12:20"
-                    }}></SurveyCard>
-                    <SurveyCard survey={{
-                        id: 2,
-                        title: "Electric car. Real solution or expensive trend?",
-                        creator: "admin",
-                        date: "2021/06/03 12:20"
-                    }}></SurveyCard>
+                {
+                    allSurveys.map(s => {
+                        return <SurveyCard key={"survey_" + s.id} survey={s}></SurveyCard>
+                    })
+                }
             </Container>
         </div>
     )
@@ -40,11 +44,11 @@ function SurveyCard(props) {
                     <p>20 questions</p>
                     <Row className="pt-1 pb-1 align-center">
                         <Col xs={0}></Col>
-                        <Col xs={12} md={8} lg={6}><Link to={"/survey/id:" + props.survey.id}><Button className="large-button">Answer this survey!</Button></Link></Col>
+                        <Col xs={12} md={8} lg={6}><Link to={"/survey/" + props.survey.id}><Button className="large-button">Answer this survey!</Button></Link></Col>
                         <Col xs={0}></Col>
                     </Row>
                     <hr></hr>
-                    <span>published on {props.survey.date} by <strong>@{props.survey.creator}</strong></span>
+                    <span>published on {props.survey.pubdate} by <strong>@{props.survey.creator}</strong></span>
                 </>
             }
 

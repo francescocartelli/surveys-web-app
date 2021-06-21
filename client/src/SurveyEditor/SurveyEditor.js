@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
-import DayJs from 'react-dayjs'
-import { Container, Row, Col, Button, Form, FormControl, Alert, InputGroup, Modal } from 'react-bootstrap'
+import { Container, Row, Col, Button, Form, FormControl, Alert, InputGroup } from 'react-bootstrap'
 import { HashLink } from 'react-router-hash-link'
 import { useHistory } from 'react-router-dom'
-import { PencilFill, TrashFill, CheckCircleFill, PlusCircleFill, DashCircleFill, XCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
+import { TrashFill, PlusCircleFill, DashCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
 import './SurveyEditor.css'
 import dayjs from 'dayjs'
-
-
+import API from '../API'
 
 function SurveyEditor(props) {
     /* These 2 states are the survey state that are sent into the
@@ -28,16 +26,8 @@ function SurveyEditor(props) {
         setQuestions(newQuestions)
     }
 
-    const publishSurvey = async () => {
-        const response = await fetch('/api/survey', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', },
-            body: JSON.stringify({ title: surveyTitle, questions: questions, pubdate: dayjs()})
-        })
-
-        if (!response.ok) {
-            throw new Error(JSON.stringify({ status: response.status, error: response.important }))
-        }
+    const publishSurvey = () => {
+        API.publishSurvey(surveyTitle, questions, dayjs())
     }
 
     useEffect(() => {
@@ -184,7 +174,7 @@ function EditPanel(props) {
                 <Col xs="auto" className="suggestion-text">Question type:</Col>
                 <Col>
                     <Form.Control as="select" onChange={(ev) => { "Short Text" === ev.target.value ? setType(1) : setType(0) }}>
-                        <option>Multiple Choice</option>
+                        <option>Closed Answer</option>
                         <option>Short Text</option>
                     </Form.Control>
                 </Col>

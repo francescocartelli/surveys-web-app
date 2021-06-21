@@ -1,9 +1,10 @@
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Container } from 'react-bootstrap'
 
 import { MyNavbar } from './MyNavbar/MyNavbar'
 import { Home } from './Home/Home'
+import { SurveyForm } from './SurveyEditor/SurveyForm'
 import { SurveyEditor } from './SurveyEditor/SurveyEditor'
 import { Login } from './Login/Login'
 
@@ -21,8 +22,8 @@ function App() {
               <Route exact path="/">
                 <Home></Home>
               </Route>
-              <Route path="/survey">
-                <p>Survey</p>
+              <Route path="/survey/:id">
+                <SurveyForm></SurveyForm>
               </Route>
               <Route path="/dashboard">
                 <p>Dashboard</p>

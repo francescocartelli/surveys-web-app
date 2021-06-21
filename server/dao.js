@@ -6,7 +6,51 @@ const sqlite = require('sqlite3')
 // open the database
 const db = new sqlite.Database('surveys.db', (err) => { if (err) throw err })
 
-// Get all surveys
+exports.getSurvey = (idSurvey) => {
+  const sql_query = 'SELECT * FROM Survey where id = ?'
+
+  return new Promise((resolve, reject) => {
+    db.get(sql_query, [idSurvey], (err, row) => {
+      if (err)
+        reject(err)
+      else if (row === undefined)
+        reject({ error: 'Survey not found!' })
+      else
+        resolve(row)
+    })
+  })
+}
+
+exports.getQuestions = (idSurvey) => {
+  const sql_query = 'SELECT * FROM Question where idSurvey = ?'
+
+  return new Promise((resolve, reject) => {
+    db.all(sql_query, [idSurvey], (err, rows) => {
+      if (err)
+        reject(err)
+      else if (rows === undefined)
+        reject({ error: 'Empty DB!' })
+      else
+        resolve(rows)
+    })
+  })
+}
+
+exports.getAnswers = (idQuestion) => {
+  const sql_query = 'SELECT * FROM Answer where idQuestion = ?'
+
+  return new Promise((resolve, reject) => {
+    db.all(sql_query, [idQuestion], (err, rows) => {
+      if (err)
+        reject(err)
+      else if (rows === undefined)
+        reject({ error: 'Empty DB!' })
+      else
+        resolve(rows)
+    })
+  })
+}
+
 exports.getSurveys = () => {
   const sql_getSurveys = 'SELECT * FROM survey'
 

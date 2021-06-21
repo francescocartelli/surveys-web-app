@@ -65,3 +65,7 @@
 .button-wide {
     width: 100%;
 }
+
+.button-tall {
+    height: 4em;
+}
