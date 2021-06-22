@@ -38,13 +38,13 @@ app.get('/api/survey/:id', param('id').isNumeric(), async (req, res) => {
     survey.questions = []
 
     const questions = await dao.getQuestions(id)
-    for(const q of questions) {
+    for (const q of questions) {
       const answers = await dao.getAnswers(q.id)
-      survey.questions.push({...q, answers})
+      survey.questions.push({ ...q, answers })
     }
     res.json(survey)
   } catch (error) {
-    if(error.error === "Survey not found!") res.status(404).json(error)
+    if (error.error === "Survey not found!") res.status(404).json(error)
     else res.status(500).json(error)
   }
 })
@@ -60,7 +60,30 @@ app.post('/api/survey', async (req, res) => {
     }
     res.end()
   } catch (error) {
-    console.log("-> " + error)
+    res.status(500).json(error)
+  }
+})
+
+app.post('/api/answers', async (req, res) => {
+  const body = req.body
+  const idSurvey = body.idSurvey
+  const username = body.username
+  const userAnswers = body.userAnswers
+
+  try {
+    const csId = await dao.insertCompletedSurvey(idSurvey, username)
+    for (const a of userAnswers) {
+      if (a.type === 0) {
+        for (const value of a.values) {
+          dao.insertUserClosedAnswer(value, csId)
+        }
+      } else {
+        dao.insertUserOpenAnswer(csId, a.id, a.values)
+      }
+    }
+
+    res.end()
+  } catch (error) {
     res.status(500).json(error)
   }
 })

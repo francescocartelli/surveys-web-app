@@ -133,6 +133,57 @@ exports.insertAnswer = async (idQuestion, answer) => {
   })
 }
 
+const getIdCompletedSurvey = () => {
+  const sql_getId = "select max(id) as num from CompletedSurvey"
+  return new Promise((resolve, reject) => {
+    db.get(sql_getId, [], (err, row) => {
+      if (err) reject(err)
+      else if (row === undefined) reject(err)
+      else resolve(row.num)
+    })
+  })
+}
+
+exports.insertCompletedSurvey = async (idSurvey, username) => {
+  const compSurveyId = await getIdCompletedSurvey() + 1
+  const sql_query = "INSERT INTO CompletedSurvey(id, idSurvey, username) VALUES (?, ?, ?)"
+  return new Promise((resolve, reject) => {
+    db.run(sql_query, [compSurveyId, idSurvey, username], (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(compSurveyId)
+      }
+    })
+  })
+}
+
+exports.insertUserClosedAnswer = async (idAnswer, idCS) => {
+  const sql_query = "INSERT INTO UserClosedAnswer(idAnswer, idCompletedSurvey) VALUES (?, ?)"
+  return new Promise((resolve, reject) => {
+    db.run(sql_query, [idAnswer, idCS], (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(true)
+      }
+    })
+  })
+}
+
+exports.insertUserOpenAnswer = async (idCS, idQuestion, text) => {
+  const sql_query = "INSERT INTO UserOpenAnswer(idCompletedSurvey, idQuestion, text) VALUES (?, ?, ?)"
+  return new Promise((resolve, reject) => {
+    db.run(sql_query, [idCS, idQuestion, text], (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(true)
+      }
+    })
+  })
+}
+
 //user validation
 exports.getUser = (email, password) => {
   return new Promise((resolve, reject) => {

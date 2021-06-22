@@ -40,6 +40,7 @@ function ClosedQuestion(props) {
                 setMessage(newMessage)
             } else setChecked(p => [...p, answerId])
         } else {
+            setMessage("")
             setChecked(p => p.filter(item => item !== answerId))
         }
     }
@@ -69,8 +70,11 @@ function ClosedQuestion(props) {
                 error={checked.length < props.question.min}
                 hint={true}></QuestionHeader>
             {
-                props.question.min !== 0 &&
-                <Row className="suggestion-text-small"><Col xs="12">Minumun of {props.question.min} answers required.</Col></Row>
+                (props.question.min !== 0 || props.question.max !== 1) &&
+                <Row className="suggestion-text-small">
+                    { props.question.min !== 0 && <Col xs="auto" className="pr-0">Minumun of {props.question.min} answers required.</Col>}
+                    { props.question.min !== 1 && <Col xs="auto">Maximum of {props.question.max} answers allowed.</Col>}
+                </Row>
             }
             {
                 message &&
@@ -79,7 +83,7 @@ function ClosedQuestion(props) {
             <Row>
                 <InputGroup>
                     {
-                        props.question.max === 1 ?
+                        (props.question.min === 1 && props.question.max === 1) ?
                             props.question.answers.map((answer, i) => {
                                 return <Answers
                                     key={"ans_" + answer.id}

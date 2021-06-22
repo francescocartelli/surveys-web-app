@@ -32,15 +32,14 @@ function SurveyForm(props) {
         let errorMessage = []
         survey.questions.forEach((q, i) => {
             if (q.type === 0) {
-                let num = userAnswers[i].length
-                if (Number(num) < Number(q.min)) {
+                let num = userAnswers[i].values.length
+                if (num < q.min) {
                     errorMessage.push("Question " + (i + 1) + " require " + q.min + " answers, " + num + " were given")
                 }
             }
         })
 
         setError(errorMessage)
-        alert(JSON.stringify(errorMessage))
 
         if (errorMessage.length > 0) {
             setWarning({ title: "Survey not complete", text: "Some questions are incomplete, check the error message and complete the answer mandatory questions." })
@@ -51,7 +50,7 @@ function SurveyForm(props) {
     }
 
     const submitUserAnswers = () => {
-        API.submitUserAnswers().then(() => {
+        API.submitUserAnswers(id, username, userAnswers).then(() => {
             setIsInformation(true)
         }).catch(err => {
             setWarning({ title: "Warning", text: err.message })
@@ -99,7 +98,7 @@ function SurveyForm(props) {
             />
             <Information
                 title="The survey has been submitted"
-                text="You will be redirect to the home page."
+                text="You will be redirected to the home page."
                 isShow={isInformation}
                 onClose={() => setIsInformation(false)}
                 onHide={() => setIsInformation(false)}

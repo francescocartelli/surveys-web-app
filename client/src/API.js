@@ -34,14 +34,14 @@ async function publishSurvey(surveyTitle, questions, pubdate) {
     }
 }
 
-async function submitUserAnswers(questions, userAnswers) {
+async function submitUserAnswers(idSurvey, username, userAnswers) {
     const response = await fetch('/api/answers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
-        body: JSON.stringify({ questions: questions, userAnswers: userAnswers })
+        body: JSON.stringify({ idSurvey: idSurvey, username: username, userAnswers: userAnswers })
     })
 
-    throw new Error("Something went wrong in answers submission.")
+    // throw new Error("Something went wrong in answers submission.")
 
     if (!response.ok) {
         throw new Error("Something went wrong in answers submission.")

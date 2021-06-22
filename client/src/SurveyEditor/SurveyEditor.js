@@ -67,15 +67,15 @@ function SurveyEditor(props) {
                     <Col>
                         <Alert variant="primary" className="text-center">
                             You survey has no questions!<br></br>
-                        Create your first question by intereacting with the form below.<br></br>
-                        Your questions will be displayed here.
-                    </Alert>
+                            Create your first question by intereacting with the form below.<br></br>
+                            Your questions will be displayed here.
+                        </Alert>
                     </Col>
                 </Row> : <Row>
                     <Col>
                         <Alert variant="primary" className="text-center" dismissible>
                             Tap "Enable Preview" to see the final result of your survey.
-                    </Alert>
+                        </Alert>
                     </Col>
                 </Row>
             }
@@ -93,12 +93,14 @@ function SurveyEditor(props) {
                 })
             }
             {
-                !isPreview && <EditPanel addQuestion={addQuestion}></EditPanel>
+                !isPreview &&
+                <>
+                    <Col xs="12" className="pl-0 pt-2"><h3>New Question:</h3></Col>
+                    <EditPanel addQuestion={addQuestion}></EditPanel>
+                </>
             }
-            <Container fluid className="edit-container">
-                <Row>
-                    <Col><Button className="button-wide" onClick={() => { publishSurvey() }}>Publish</Button></Col>
-                </Row>
+            <Container fluid className="pt-2">
+                <Col><Button className="button-wide button-tall" onClick={() => { publishSurvey() }}>Publish Survey</Button></Col>
             </Container>
         </Container>
     )
@@ -111,6 +113,8 @@ function EditPanel(props) {
     const [min, setMin] = useState(1)
     const [max, setMax] = useState(1)
 
+    const [error, setError] = useState("")
+
     const [newAnswerText, setNewAnswerText] = useState("")
 
     const history = useHistory()
@@ -120,6 +124,14 @@ function EditPanel(props) {
     const [questId, setQuestId] = useState(0)
 
     const submitQuestion = () => {
+        let newError = []
+        if (answers.length < 1) newError.push("Questions with no answers are not allowed.")
+        if (min > answers.length) newError.push("Answers number is lower than minimum.")
+        if (min > max) newError.push("Minimum answers require are higher than maximul answers allowed.")
+
+        setError(newError)
+        if (newError.length > 0) return
+
         props.addQuestion({
             id: questId,
             text: text,
@@ -128,7 +140,6 @@ function EditPanel(props) {
             min: min,
             max: max
         })
-        history.push("#quest_1")
         resetQuestion()
         setQuestId(i => i + 1)
     }
@@ -183,6 +194,13 @@ function EditPanel(props) {
             {/* Answers */}
             <Row className="container-row">
                 <Col xs="12" className="suggestion-text">Answers:</Col>
+                {
+                    error.length > 0 && <Col xs="12"><Alert variant="danger">
+                        {
+                            error.map(e => <p>{e}<br /></p>)
+                        }
+                    </Alert></Col>
+                }
                 {type === 0 ? <>
                     {answers.map((answer, i) => {
                         return <Col sm="12" md="6" key={i} className="pb-1">
