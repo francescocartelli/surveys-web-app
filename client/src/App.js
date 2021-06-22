@@ -4,8 +4,8 @@ import { Container } from 'react-bootstrap'
 
 import { MyNavbar } from './MyNavbar/MyNavbar'
 import { Home } from './Home/Home'
-import { SurveyForm } from './SurveyEditor/SurveyForm'
-import { SurveyEditor } from './SurveyEditor/SurveyEditor'
+import { SurveyForm } from './Surveys/SurveyForm'
+import { SurveyEditor } from './Surveys/SurveyEditor'
 import { Login } from './Login/Login'
 
 function App() {

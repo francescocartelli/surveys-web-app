@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
-import { ExclamationCircleFill, CheckCircleFill } from 'react-bootstrap-icons'
-import './SurveyEditor.css'
+import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
+import { ExclamationCircleFill, CheckCircleFill, ArrowUpCircleFill, TrashFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
+import './style.css'
 
+/* Question's subcomponent containing title and other stuff */
 function QuestionHeader(props) {
     // props.hint show or hides the error or correct icon
     return (
@@ -20,6 +21,79 @@ function QuestionHeader(props) {
     )
 }
 
+/* Question used in SurveyEditor as a question preview */
+function EditQuestion(props) {
+    const moveUp = () => {
+        props.setQuestions(prevQuestions => {
+            return prevQuestions.map((q, i) => {
+                if (i === props.position - 1) return prevQuestions[props.position]
+                else if (i === props.position) return prevQuestions[props.position - 1]
+                else return q
+            })
+        })
+    }
+
+    const moveDown = () => {
+        props.setQuestions(prevQuestions => {
+            return prevQuestions.map((q, i) => {
+                if (i === props.position) return prevQuestions[props.position + 1]
+                else if (i === props.position + 1) return prevQuestions[props.position]
+                else return q
+            })
+        })
+    }
+
+    return (
+        <Container fluid className="question-container">
+            <Row className="question-row">
+                <div className="number-box">{props.number + 1}</div>
+                <Col><p className="pt-2 mb-0">{props.question.text}</p></Col>
+                {
+                    props.position !== 0 &&
+                    <Col xs="auto" className="pl-1 pr-0">
+                        <Button onClick={() => { moveUp() }}>
+                            <ArrowUpCircleFill />
+                        </Button>
+                    </Col>
+                }
+                {
+                    !props.isLast &&
+                    <Col xs="auto" className="pl-1 pr-0">
+                        <Button onClick={() => { moveDown() }}>
+                            <ArrowDownCircleFill />
+                        </Button>
+                    </Col>
+                }
+                <Col xs="auto" className="pl-1 pr-0">
+                    <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
+                </Col>
+            </Row>
+            <Row>
+                {props.question.type === 0 ?
+                    <InputGroup>
+                        {props.question.answers.map((answer, i) => {
+                            return <Col sm="12" md="6" key={props.question.id + "ans" + i} className="pb-1">
+                                <Row key={"qt_" + i} className="answer-row">
+                                    <Col xs="auto">{
+                                        props.max === 1 ?
+                                            <Form.Check readOnly /> : <InputGroup.Radio readOnly />
+                                    }</Col>
+                                    <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
+                                    <Col>{answer.text}</Col>
+                                </Row>
+                            </Col>
+                        })}
+                    </InputGroup> :
+                    <Col xs="12" className="pt-1">
+                        <Form.Control readOnly as="textarea" rows={3} placeholder="Short text answer here..." />
+                    </Col>
+                }
+            </Row>
+        </Container>
+    )
+}
+
+/* Closed question component used in SurveyForm by the user  */
 function ClosedQuestion(props) {
     // This useState contains the ids of the checked answers
     // when this change the state is sent into the survey userAnswers state
@@ -110,7 +184,7 @@ function ClosedQuestion(props) {
     )
 }
 
-// Open-ended question
+/* Open question component used in SurveyForm by the user  */
 function OpenQuestion(props) {
     const [value, setValue] = useState("")
 
@@ -152,11 +226,11 @@ function OpenQuestion(props) {
     )
 }
 
+/* Block of answers used in ClosedQuestion */
 function Answers(props) {
     const handleChange = (ev) => {
         props.updateUserAnswers(props.answer.id, ev)
     }
-
     return (
         <Col sm="12" md="6" className="pb-1">
             <Row className="answer-row">
@@ -177,4 +251,4 @@ function Answers(props) {
     )
 }
 
-export { ClosedQuestion, OpenQuestion }
+export { ClosedQuestion, OpenQuestion, EditQuestion }

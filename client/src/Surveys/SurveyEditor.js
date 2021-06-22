@@ -5,9 +5,10 @@ import { useHistory } from 'react-router-dom'
 import { TrashFill, PlusCircleFill, DashCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
 import dayjs from 'dayjs'
 
-import './SurveyEditor.css'
+import './style.css'
 import API from '../API'
 import { Confirmation, Information } from '../Modals/Modals'
+import { EditQuestion } from './Question'
 
 function SurveyEditor(props) {
     /* These 2 states are the survey state that are sent into the
@@ -16,7 +17,6 @@ function SurveyEditor(props) {
     const [questions, setQuestions] = useState([])
 
     const [isEditTitle, setIsEditTitle] = useState(false)
-    const [isPreview, setIsPreview] = useState(false)
 
     // Modals
     const [isConfirmation, setIsConfimation] = useState(false)
@@ -39,6 +39,7 @@ function SurveyEditor(props) {
             setWarning({ title: "Survey has no questions", text: "In order to proceed survey needs at least one question." })
             setIsWarning(true)
         } else {
+            /* Always ask for confirmation */
             setIsConfimation(true)
         }
     }
@@ -47,7 +48,7 @@ function SurveyEditor(props) {
         API.publishSurvey(surveyTitle, questions, dayjs()).then(() => {
             setIsInformation(true)
         }).catch(err => {
-            setWarning({title: "Error", text: err.message})
+            setWarning({ title: "Error", text: err.message })
             setIsWarning(true)
         })
     }
@@ -70,8 +71,8 @@ function SurveyEditor(props) {
                 onHide={() => setIsConfimation(false)}
             />
             <Information
-                title="The survey has been submitted"
-                text="You will be redirected to the home page."
+                title="The survey has been published"
+                text="You will be redirected to the dashboard page."
                 isShow={isInformation}
                 onClose={() => setIsInformation(false)}
                 onHide={() => setIsInformation(false)}
@@ -95,22 +96,15 @@ function SurveyEditor(props) {
                             <h2>{surveyTitle}</h2>
                     }
                 </Col>
-                {
-                    !isPreview &&
-                    <Col xs="auto">
-                        <Button onClick={() => setIsEditTitle(!isEditTitle)}>
-                            {isEditTitle ? "Save Title" : "Edit Title"}
-                        </Button>
-                    </Col>
-                }
                 <Col xs="auto">
-                    <Button onClick={() => setIsPreview(s => !s)}>
-                        {isPreview ? "Return to Edit" : "Enable Preview"}
+                    <Button onClick={() => setIsEditTitle(!isEditTitle)}>
+                        {isEditTitle ? "Save Title" : "Edit Title"}
                     </Button>
                 </Col>
             </Row>
             {
-                questions.length === 0 ? <Row className="pt-2 pb-2">
+                questions.length === 0 &&
+                <Row className="pt-2 pb-2">
                     <Col>
                         <Alert variant="primary" className="text-center">
                             You survey has no questions!<br></br>
@@ -118,34 +112,22 @@ function SurveyEditor(props) {
                             Your questions will be displayed here.
                         </Alert>
                     </Col>
-                </Row> : <Row>
-                    <Col>
-                        <Alert variant="primary" className="text-center" dismissible>
-                            Tap "Enable Preview" to see the final result of your survey.
-                        </Alert>
-                    </Col>
                 </Row>
             }
             {
                 questions.map((question, i) => {
-                    return <Question
+                    return <EditQuestion
                         key={"quest_" + question.id}
-                        position={i}
+                        number={i}
                         question={question}
-                        preview={isPreview}
                         isLast={i === questions.length - 1}
                         setQuestions={setQuestions}
                         removeQuestion={() => removeQuestion(i)}>
-                    </Question>
+                    </EditQuestion>
                 })
             }
-            {
-                !isPreview &&
-                <>
-                    <Col xs="12" className="pl-0 pt-2"><h3>New Question:</h3></Col>
-                    <EditPanel addQuestion={addQuestion}></EditPanel>
-                </>
-            }
+            <Col xs="12" className="pl-0 pt-2"><h3>New Question:</h3></Col>
+            <EditPanel addQuestion={addQuestion}></EditPanel>
             <Container fluid className="pt-2 mb-3">
                 <Col><Button className="button-wide button-tall" onClick={() => { validateSurvey() }}>Publish Survey</Button></Col>
             </Container>
@@ -342,29 +324,24 @@ function Question(props) {
                 <div className="number-box">{props.position + 1}</div>
                 <Col><p className="pt-2">{props.question.text}</p></Col>
                 {
-                    !props.preview &&
-                    <>
-                        {
-                            props.position !== 0 &&
-                            <Col xs="auto" className="pl-1 pr-0">
-                                <Button onClick={() => { moveUp() }}>
-                                    <ArrowUpCircleFill />
-                                </Button>
-                            </Col>
-                        }
-                        {
-                            !props.isLast &&
-                            <Col xs="auto" className="pl-1 pr-0">
-                                <Button onClick={() => { moveDown() }}>
-                                    <ArrowDownCircleFill />
-                                </Button>
-                            </Col>
-                        }
-                        <Col xs="auto" className="pl-1 pr-0">
-                            <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
-                        </Col>
-                    </>
+                    props.position !== 0 &&
+                    <Col xs="auto" className="pl-1 pr-0">
+                        <Button onClick={() => { moveUp() }}>
+                            <ArrowUpCircleFill />
+                        </Button>
+                    </Col>
                 }
+                {
+                    !props.isLast &&
+                    <Col xs="auto" className="pl-1 pr-0">
+                        <Button onClick={() => { moveDown() }}>
+                            <ArrowDownCircleFill />
+                        </Button>
+                    </Col>
+                }
+                <Col xs="auto" className="pl-1 pr-0">
+                    <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
+                </Col>
             </Row>
             <Row>
                 {props.question.type === 0 ?
@@ -387,7 +364,7 @@ function Question(props) {
                     </Col>
                 }
             </Row>
-        </Container >
+        </Container>
     )
 }
 
@@ -433,8 +410,6 @@ function MinMaxEditor(props) {
                     </Col>
                 </Row>
             </Col>
-
-
         </Row>
     )
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Button, Alert } from 'react-bootstrap'
-import './SurveyEditor.css'
+import './style.css'
 import { useParams } from 'react-router'
 
 import API from '../API'

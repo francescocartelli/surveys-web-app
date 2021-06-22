@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
 
+/* Modal with dual option used for asking confirmation */
 function Confirmation(props) {
     return (
         <Modal show={props.isShow} onHide={() => props.onClose()}>
@@ -20,6 +21,7 @@ function Confirmation(props) {
     )
 }
 
+/* Just an informative modal with only close action */
 function Information(props) {
     return (
         <Modal show={props.isShow} onHide={() => props.onClose()}>
@@ -38,6 +40,7 @@ function Information(props) {
     )
 }
 
+/* Modal used in SurveyForm for getting the username */
 function UserModal(props) {
     const [username, setUsername] = useState("")
     const [enabled, setEnabled] = useState(false)

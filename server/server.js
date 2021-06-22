@@ -7,8 +7,8 @@ const morgan = require('morgan')
 const dao = require('./dao')
 
 // init express
-const app = new express();
-const port = 3001;
+const app = new express()
+const port = 3001
 
 app.use(morgan('dev'))
 app.use(express.json())
@@ -16,7 +16,7 @@ app.use(express.json())
 // activate the server
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
-});
+})
 
 /* ------ */
 /* SURVEY */
@@ -32,8 +32,9 @@ app.get('/api/surveys', async (req, res) => {
 })
 
 app.get('/api/survey/:id', param('id').isNumeric(), async (req, res) => {
-  const id = req.params.id
   try {
+    const id = req.params.id
+
     let survey = await dao.getSurvey(id)
     survey.questions = []
 
@@ -50,9 +51,10 @@ app.get('/api/survey/:id', param('id').isNumeric(), async (req, res) => {
 })
 
 app.post('/api/survey', async (req, res) => {
-  const survey = req.body
-  const questions = survey.questions
   try {
+    const survey = req.body
+    const questions = survey.questions
+
     const sId = await dao.insertSurvey(survey)
     for (const q of questions) {
       let qId = await dao.insertQuestion(sId, q)
@@ -65,12 +67,12 @@ app.post('/api/survey', async (req, res) => {
 })
 
 app.post('/api/answers', async (req, res) => {
-  const body = req.body
-  const idSurvey = body.idSurvey
-  const username = body.username
-  const userAnswers = body.userAnswers
-
   try {
+    const body = req.body
+    const idSurvey = body.idSurvey
+    const username = body.username
+    const userAnswers = body.userAnswers
+
     const csId = await dao.insertCompletedSurvey(idSurvey, username)
     for (const a of userAnswers) {
       if (a.type === 0) {
