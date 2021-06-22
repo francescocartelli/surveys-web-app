@@ -30,7 +30,7 @@ async function publishSurvey(surveyTitle, questions, pubdate) {
     })
 
     if (!response.ok) {
-        throw new Error(JSON.stringify({ status: response.status, error: response.important }))
+        throw new Error("An error occured on survey publication.")
     }
 }
 

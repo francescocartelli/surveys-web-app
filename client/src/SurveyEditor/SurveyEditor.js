@@ -3,9 +3,11 @@ import { Container, Row, Col, Button, Form, FormControl, Alert, InputGroup } fro
 import { HashLink } from 'react-router-hash-link'
 import { useHistory } from 'react-router-dom'
 import { TrashFill, PlusCircleFill, DashCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
-import './SurveyEditor.css'
 import dayjs from 'dayjs'
+
+import './SurveyEditor.css'
 import API from '../API'
+import { Confirmation, Information } from '../Modals/Modals'
 
 function SurveyEditor(props) {
     /* These 2 states are the survey state that are sent into the
@@ -15,6 +17,12 @@ function SurveyEditor(props) {
 
     const [isEditTitle, setIsEditTitle] = useState(false)
     const [isPreview, setIsPreview] = useState(false)
+
+    // Modals
+    const [isConfirmation, setIsConfimation] = useState(false)
+    const [isInformation, setIsInformation] = useState(false)
+    const [isWarning, setIsWarning] = useState(false)
+    const [warning, setWarning] = useState({ title: "", text: "" })
 
     const addQuestion = (newQuestion) => {
         setQuestions([...questions, newQuestion])
@@ -26,8 +34,22 @@ function SurveyEditor(props) {
         setQuestions(newQuestions)
     }
 
+    const validateSurvey = () => {
+        if (questions.length < 1) {
+            setWarning({ title: "Survey has no questions", text: "In order to proceed survey needs at least one question." })
+            setIsWarning(true)
+        } else {
+            setIsConfimation(true)
+        }
+    }
+
     const publishSurvey = () => {
-        API.publishSurvey(surveyTitle, questions, dayjs())
+        API.publishSurvey(surveyTitle, questions, dayjs()).then(() => {
+            setIsInformation(true)
+        }).catch(err => {
+            setWarning({title: "Error", text: err.message})
+            setIsWarning(true)
+        })
     }
 
     useEffect(() => {
@@ -36,6 +58,31 @@ function SurveyEditor(props) {
 
     return (
         <Container fluid>
+            <Confirmation
+                title="Confirm survey publication"
+                text="Are you sure you want to publish this survey?"
+                isShow={isConfirmation}
+                onConfirm={() => {
+                    setIsConfimation(false)
+                    publishSurvey()
+                }}
+                onClose={() => setIsConfimation(false)}
+                onHide={() => setIsConfimation(false)}
+            />
+            <Information
+                title="The survey has been submitted"
+                text="You will be redirected to the home page."
+                isShow={isInformation}
+                onClose={() => setIsInformation(false)}
+                onHide={() => setIsInformation(false)}
+            />
+            <Information
+                title={warning.title}
+                text={warning.text}
+                isShow={isWarning}
+                onClose={() => setIsWarning(false)}
+                onHide={() => setIsWarning(false)}
+            />
             <Row className="pt-2 pb-2">
                 <Col className="m-0">
                     {
@@ -100,7 +147,7 @@ function SurveyEditor(props) {
                 </>
             }
             <Container fluid className="pt-2 mb-3">
-                <Col><Button className="button-wide button-tall" onClick={() => { publishSurvey() }}>Publish Survey</Button></Col>
+                <Col><Button className="button-wide button-tall" onClick={() => { validateSurvey() }}>Publish Survey</Button></Col>
             </Container>
         </Container>
     )
@@ -249,7 +296,7 @@ function EditPanel(props) {
                         <Row className="container-row">
                             <Col xs="auto" className="suggestion-text">Mandatory question:</Col>
                             <Col xs="auto" className="pt-2"><Form.Check checked={min > 0} onChange={(ev) => {
-                                if(ev.target.checked) setMin(1)
+                                if (ev.target.checked) setMin(1)
                                 else setMin(0)
                             }}></Form.Check></Col>
                         </Row>
