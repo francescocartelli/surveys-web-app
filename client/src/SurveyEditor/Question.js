@@ -72,8 +72,8 @@ function ClosedQuestion(props) {
             {
                 (props.question.min !== 0 || props.question.max !== 1) &&
                 <Row className="suggestion-text-small">
-                    { props.question.min !== 0 && <Col xs="auto" className="pr-0">Minumun of {props.question.min} answers required.</Col>}
-                    { props.question.min !== 1 && <Col xs="auto">Maximum of {props.question.max} answers allowed.</Col>}
+                    {props.question.min !== 0 && <Col xs="auto" className="pr-0">Minumun of {props.question.min} answers required.</Col>}
+                    {props.question.min !== 1 && <Col xs="auto">Maximum of {props.question.max} answers allowed.</Col>}
                 </Row>
             }
             {
@@ -128,11 +128,21 @@ function OpenQuestion(props) {
 
     return (
         <Container fluid className="question-container">
-            <QuestionHeader number={props.number + 1} text={props.question.text} error={props.question.error}></QuestionHeader>
+            <QuestionHeader
+                number={props.number + 1}
+                text={props.question.text}
+                error={props.question.min !== 0 && value === ""}
+                hint={true}></QuestionHeader>
+            {
+                props.question.min > 0 && <Row className="suggestion-text-small">
+                    <Col xs="auto" className="pr-0">This answer is necessary</Col>
+                </Row>
+            }
             <Row>
                 <Col xs="12" className="pt-1">
                     <Form.Control as="textarea"
                         rows={3}
+                        maxLength="200"
                         value={value}
                         placeholder="Short text answer here..."
                         onChange={ev => setValue(ev.target.value)} />

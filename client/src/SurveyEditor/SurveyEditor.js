@@ -99,7 +99,7 @@ function SurveyEditor(props) {
                     <EditPanel addQuestion={addQuestion}></EditPanel>
                 </>
             }
-            <Container fluid className="pt-2">
+            <Container fluid className="pt-2 mb-3">
                 <Col><Button className="button-wide button-tall" onClick={() => { publishSurvey() }}>Publish Survey</Button></Col>
             </Container>
         </Container>
@@ -125,9 +125,11 @@ function EditPanel(props) {
 
     const submitQuestion = () => {
         let newError = []
-        if (answers.length < 1) newError.push("Questions with no answers are not allowed.")
-        if (min > answers.length) newError.push("Answers number is lower than minimum.")
-        if (min > max) newError.push("Minimum answers require are higher than maximul answers allowed.")
+        if (type === 0) {
+            if (answers.length < 1) newError.push("Questions with no answers are not allowed.")
+            if (min > answers.length) newError.push("Answers number is lower than minimum.")
+            if (min > max) newError.push("Minimum answers require are higher than maximul answers allowed.")
+        }
 
         setError(newError)
         if (newError.length > 0) return
@@ -157,10 +159,9 @@ function EditPanel(props) {
 
     const resetQuestion = () => {
         setText("")
-        setType(0)
         setAnswers([])
-        setMin(0)
-        setMax(0)
+        setMin(1)
+        setMax(1)
         setNewAnswerText("")
     }
 
@@ -184,7 +185,7 @@ function EditPanel(props) {
             <Row className="container-row">
                 <Col xs="auto" className="suggestion-text">Question type:</Col>
                 <Col>
-                    <Form.Control as="select" onChange={(ev) => { "Short Text" === ev.target.value ? setType(1) : setType(0) }}>
+                    <Form.Control as="select" option="" onChange={(ev) => { "Short Text" === ev.target.value ? setType(1) : setType(0) }}>
                         <option>Closed Answer</option>
                         <option>Short Text</option>
                     </Form.Control>
@@ -239,10 +240,20 @@ function EditPanel(props) {
             <hr></hr>
             {/* Advanced Setting */}
             {
-                type === 0 && <>
-                    <MinMaxEditor AnswersNumber={answers.length} min={min} max={max} setMin={setMin} setMax={setMax}></MinMaxEditor>
-                    <hr></hr>
-                </>
+                type === 0 ?
+                    <>
+                        <MinMaxEditor AnswersNumber={answers.length} min={min} max={max} setMin={setMin} setMax={setMax}></MinMaxEditor>
+                        <hr></hr>
+                    </> :
+                    <>
+                        <Row className="container-row">
+                            <Col xs="auto" className="suggestion-text">Mandatory question:</Col>
+                            <Col xs="auto" className="pt-2"><Form.Check checked={min > 0} onChange={(ev) => {
+                                if(ev.target.checked) setMin(1)
+                                else setMin(0)
+                            }}></Form.Check></Col>
+                        </Row>
+                    </>
             }
             <Row className="p-2">
                 <Col xs="6">

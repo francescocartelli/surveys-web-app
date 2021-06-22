@@ -36,6 +36,10 @@ function SurveyForm(props) {
                 if (num < q.min) {
                     errorMessage.push("Question " + (i + 1) + " require " + q.min + " answers, " + num + " were given")
                 }
+            } else {
+                if(q.min > 0 && !userAnswers[i].values ) {
+                    errorMessage.push("Question " + (i + 1) + " require an answer")
+                }
             }
         })
 
@@ -123,7 +127,7 @@ function SurveyForm(props) {
                 </Col>
                 {
                     error.length > 0 && <Col xs={12}>
-                        <Alert variant="danger">{error.map(e => e)}</Alert>
+                        <Alert variant="danger">{error.map(e => <p>{e}<br /></p>)}</Alert>
                     </Col>
                 }
                 {
