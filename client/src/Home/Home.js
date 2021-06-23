@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap'
+import { Alert, Container, Row, Col, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import './Home.css'
 
@@ -7,12 +7,13 @@ import API from '../API'
 
 function Home(props) {
     const [allSurveys, setAllSurveys] = useState([])
+    const [error, setError] = useState("")
 
     useEffect(() => {
         API.getSurveys().then(s => {
             setAllSurveys(s)
         }).catch(err => {
-            console.log(err.message)
+            setError(err.message)
         })
     }, [])
 
@@ -29,6 +30,9 @@ function Home(props) {
                     allSurveys.map(s => {
                         return <SurveyCard key={"survey_" + s.id} survey={s}></SurveyCard>
                     })
+                }
+                {
+                    error && <Alert variant="danger">{error}</Alert>
                 }
             </Container>
         </div>

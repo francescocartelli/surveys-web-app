@@ -1,7 +1,7 @@
 'use strict'
 
 const sqlite = require('sqlite3')
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
 
 // open the database
 const db = new sqlite.Database('surveys.db', (err) => { if (err) throw err })
@@ -185,10 +185,10 @@ exports.insertUserOpenAnswer = async (idCS, idQuestion, text) => {
 }
 
 //user validation
-exports.getUser = (email, password) => {
+exports.getUser = (username, password) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM users WHERE email = ?';
-    db.get(sql, [email], (err, row) => {
+    const sql = 'SELECT * FROM Admin WHERE username = ?';
+    db.get(sql, [username], (err, row) => {
       if (err)
         reject(err); // DB error
       else if (row === undefined) {
@@ -196,7 +196,7 @@ exports.getUser = (email, password) => {
       } else {
         bcrypt.compare(password, row.hash).then(result => {
           if (result) { // password matches
-            resolve({ id: row.id, username: row.email, name: row.name });
+            resolve({ id: row.id, username: row.username });
           } else {
             resolve(false); // password not matching
           }
@@ -208,14 +208,14 @@ exports.getUser = (email, password) => {
 
 exports.getUserById = (id) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM users WHERE id = ?';
+    const sql = 'SELECT * FROM Admin WHERE id = ?';
     db.get(sql, [id], (err, row) => {
       if (err)
         reject(err); // DB error
       else if (row === undefined)
         resolve(false); // user not found
       else {
-        resolve({ id: row.id, email: row.email, name: row.name });
+        resolve({ id: row.id, username: row.username });
       }
     })
   })

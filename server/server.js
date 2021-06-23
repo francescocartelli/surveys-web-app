@@ -4,6 +4,10 @@ const { response } = require('express')
 const { body, param, validationResult } = require('express-validator')
 const express = require('express')
 const morgan = require('morgan')
+const passport = require('passport');
+const passportLocal = require('passport-local').Strategy;
+const session = require('express-session');
+
 const dao = require('./dao')
 
 // init express
@@ -16,6 +20,91 @@ app.use(express.json())
 // activate the server
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
+})
+
+/* -------- */
+/* PASSPORT */
+/* -------- */
+
+passport.use(new passportLocal.Strategy((username, password, done) => {
+  // verification callback for authentication
+  dao.getUser(username, password).then(user => {
+    if (user)
+      done(null, user);
+    else
+      done(null, false, { message: 'Username or password wrong' });
+  }).catch(err => {
+    done(err);
+  })
+}))
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+})
+
+passport.deserializeUser((id, done) => {
+  dao.getUserById(id)
+    .then(user => done(null, user))// this will be available in req.user
+    .catch(err => done(err, null))
+})
+
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated())
+    return next();
+  return res.status(401).json({ error: 'Unauthenticated user!' });
+}
+
+/* ------- */
+/* SESSION */
+/* ------- */
+
+// initialize and configure HTTP sessions
+app.use(session({
+  secret: 'this and that and other',
+  resave: false,
+  saveUninitialized: false
+}))
+
+// tell passport to use session cookies
+app.use(passport.initialize())
+app.use(passport.session())
+
+/* -------------- */
+/* AUTHENTICATION */
+/* -------------- */
+
+// Login
+app.post('/api/sessions', function (req, res, next) {
+  passport.authenticate('local', (err, user, info) => {
+    if (err)
+      return next(err);
+    if (!user)
+      return res.status(401).json(info)
+
+    // success, perform the login
+    req.login(user, (err) => {
+      if (err)
+        return next(err)
+
+      // req.user contains the authenticated user, we send all the user info back
+      // this is coming from userDao.getUser()
+      return res.json(req.user)
+    })
+  })(req, res, next)
+})
+
+// Logout
+app.delete('/api/sessions/current', isLoggedIn, (req, res) => {
+  req.logout()
+  res.end()
+})
+
+// Current User
+app.get('/api/sessions/current', (req, res) => {
+  if (req.isAuthenticated())
+    res.status(200).json(req.user)
+  else
+    res.status(401).json({ error: 'Unauthenticated user!' })
 })
 
 /* ------ */

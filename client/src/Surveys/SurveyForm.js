@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Button, Alert } from 'react-bootstrap'
 import './style.css'
-import { useParams } from 'react-router'
+import { useParams, Redirect } from 'react-router'
 
 import API from '../API'
 import { ClosedQuestion, OpenQuestion } from './Question'
@@ -72,8 +72,9 @@ function SurveyForm(props) {
                         return { id: q.id, type: q.type, values: null }
                     })
                 })
+            }).catch(err => {
+                return <Redirect push to="/" />
             })
-            .catch(err => alert(err))
     }, [props, id])
 
     /*

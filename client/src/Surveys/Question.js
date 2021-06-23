@@ -173,7 +173,7 @@ function ClosedQuestion(props) {
                                     answer={answer}
                                     number={i}
                                     controlType="check"
-                                    isChecked={checked.includes(answer.id)}
+                                    isChecked={checked.indexOf(answer.id) > -1}
                                     updateUserAnswers={updateUserAnswers}
                                 ></Answers>
                             })
@@ -229,6 +229,7 @@ function OpenQuestion(props) {
 /* Block of answers used in ClosedQuestion */
 function Answers(props) {
     const handleChange = (ev) => {
+        ev.preventDefault()
         props.updateUserAnswers(props.answer.id, ev)
     }
     return (
