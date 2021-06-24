@@ -1,6 +1,6 @@
 import { Navbar, Dropdown } from 'react-bootstrap'
 import { PersonCircle, BoxArrowRight, CardList } from "react-bootstrap-icons"
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 
 import './MyNavbar.css'
 import API from '../API'
@@ -13,8 +13,10 @@ function MyNavbar(props) {
 	const doLogout = async () => {
 		try {
 			API.logOut()
+			props.setUser("")
+			props.setUserLogged(false)
 			history.push("/home")
-		} catch {}
+		} catch { }
 	}
 
 	return (
@@ -22,7 +24,10 @@ function MyNavbar(props) {
 			<Navbar.Brand href="/" className='mx-2 navbar-brand'>
 				<CardList size={24} />{' '}{appName}
 			</Navbar.Brand>
-			<UserProfileButton user={props.user} doLogOut={doLogout} />
+			{props.user ?
+				<UserProfileButton user={props.user} doLogOut={doLogout} />:
+				<Link className="nav-text pr-2" to="/login">Login</Link>
+			}
 		</Navbar>
 	)
 }

@@ -22,3 +22,8 @@
     background-color: #195995 !important;
     border: transparent !important;
 }
+
+.nav-text {
+    color: white;
+    font-weight: 600;
+}

@@ -7,6 +7,7 @@ import API from '../API'
 import { ClosedQuestion, OpenQuestion } from './Question'
 import { Confirmation, Information, UserModal } from '../Modals/Modals'
 import { useHistory } from 'react-router-dom'
+import { PersonPlus } from 'react-bootstrap-icons'
 
 function SurveyForm(props) {
     // Id of the survey
@@ -148,6 +149,7 @@ function SurveyForm(props) {
                                 key={"quest_" + q.id}
                                 question={q}
                                 number={i}
+                                checked={[]}
                                 setUserAnswers={setUserAnswers}></ClosedQuestion> :
                             <OpenQuestion
                                 key={"quest_" + q.id}

@@ -26,8 +26,10 @@ function App() {
       try {
         const fetchedUser = await API.getUserInfo()  // here you have the user info, if already logged in
         setUserLogged(true)
+        setUser(fetchedUser.username)
       } catch (err) {
         setUserLogged(false)
+        setUser("")
       }
     }
     checkAuth()
@@ -42,11 +44,11 @@ function App() {
             <Route path="/login">
               {userLogged ?
                 <Redirect to="/dashboard"></Redirect> :
-                <Login></Login>}
+                <Login setUser={setUser} setUserLogged={setUserLogged}></Login>}
             </Route>
           }
           <Route path={["/", "/*"]}>
-            <MyNavbar user={user}></MyNavbar>
+            <MyNavbar user={user} setUser={setUser} setUserLogged={setUserLogged}></MyNavbar>
             <Container fluid className="below-nav vheight-100">
               <Switch>
                 <Route exact path={["/", "/home"]}>

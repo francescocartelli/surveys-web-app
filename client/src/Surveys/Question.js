@@ -97,7 +97,7 @@ function EditQuestion(props) {
 function ClosedQuestion(props) {
     // This useState contains the ids of the checked answers
     // when this change the state is sent into the survey userAnswers state
-    const [checked, setChecked] = useState([])
+    const [checked, setChecked] = useState(props.checked)
     // Is used only for max answers overloading
     const [message, setMessage] = useState("")
 
@@ -229,7 +229,6 @@ function OpenQuestion(props) {
 /* Block of answers used in ClosedQuestion */
 function Answers(props) {
     const handleChange = (ev) => {
-        ev.preventDefault()
         props.updateUserAnswers(props.answer.id, ev)
     }
     return (
