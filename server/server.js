@@ -95,16 +95,20 @@ app.post('/api/sessions', function (req, res, next) {
 
 // Logout
 app.delete('/api/sessions/current', isLoggedIn, (req, res) => {
+  console.log("logout")
   req.logout()
   res.end()
 })
 
 // Current User
 app.get('/api/sessions/current', (req, res) => {
-  if (req.isAuthenticated())
+  if (req.isAuthenticated()) {
+    console.log("islogged")
     res.status(200).json(req.user)
-  else
+  } else {
+    console.log("isnotlogged")
     res.status(401).json({ error: 'Unauthenticated user!' })
+  }
 })
 
 /* ------ */

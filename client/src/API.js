@@ -69,6 +69,22 @@ async function logIn(credentials) {
     }
 }
 
-const API = { getSurveys, getSurvey, publishSurvey, submitUserAnswers, logIn }
+async function getUserInfo() {
+    const response = await fetch('/api/sessions/current');
+    const userInfo = await response.json();
+
+    if (response.ok) {
+        return userInfo
+    } else {
+        throw userInfo
+    }
+}
+
+async function logOut() {
+    await fetch('/api/sessions/current', { method: 'DELETE' });
+}
+
+
+const API = { getSurveys, getSurvey, publishSurvey, submitUserAnswers, logIn, getUserInfo, logOut }
 
 export default API

@@ -208,7 +208,7 @@ exports.getUser = (username, password) => {
 
 exports.getUserById = (id) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM Admin WHERE id = ?';
+    const sql = 'select * from Admin where id = ?';
     db.get(sql, [id], (err, row) => {
       if (err)
         reject(err); // DB error

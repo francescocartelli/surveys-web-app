@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { Container, Form, Row, Col, Button, Alert } from "react-bootstrap";
 import { UiChecks } from "react-bootstrap-icons";
+import { useHistory } from "react-router-dom"
+
 import "./Login.css"
+import API from '../API'
 
 function Login(props) {
     const [loginEnabled, setLoginEnabled] = useState(false)
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [error, setError] = useState();
+    const [error, setError] = useState()
+
+    const history = useHistory()
 
     const onUsernameChange = (ev) => {
         setUsername(ev.target.value)
@@ -23,9 +28,14 @@ function Login(props) {
         else setLoginEnabled(false)
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        props.doLogin({ username, password }).catch(err => setError(err));
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        try {
+            const user = await API.logIn({ username, password })
+            history.push("/home")
+        } catch (err) {
+            props.doLogin().catch(err => setError(err))
+        }
     }
 
     return (

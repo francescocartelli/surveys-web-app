@@ -54,7 +54,7 @@ function SurveyEditor(props) {
     }
 
     useEffect(() => {
-        alert(JSON.stringify(questions))
+        // alert(JSON.stringify(questions))
     }, [questions])
 
     return (
