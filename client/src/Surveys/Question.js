@@ -101,19 +101,24 @@ function ClosedQuestion(props) {
     // Is used only for max answers overloading
     const [message, setMessage] = useState("")
 
+    const [lamp, setLamp] = useState(false)
+
     /* Handle form multiple choice */
     const updateUserAnswers = (answerId, ev) => {
+        ev.stopPropagation()
         const value = ev.target.checked
-        let newMessage = ""
         if (value === true) {
-            // If true max answers will be overloaded, stop action, do not change state
-            if (Number(checked.length) >= Number(props.question.max)) {
-                // Check if user will raise the max answers limit
-                ev.preventDefault()
-                newMessage += "Maximum number of answers reached. Deselect some if you want to change answers."
-                setMessage(newMessage)
-            } else setChecked(p => [...p, answerId])
+            // Check added
+            // If it's an optional single choice just recreate the checked state
+            if (props.question.max === 1) setChecked([answerId])
+            else {
+                // If question allow multiple answer check max constraint before
+                if (Number(checked.length) >= Number(props.question.max)) {
+                    setMessage("Maximum number of answers reached. Deselect some if you want to change answers.")
+                } else setChecked(p => [...p, answerId])
+            }
         } else {
+            // Check removed 
             setMessage("")
             setChecked(p => p.filter(item => item !== answerId))
         }
@@ -121,7 +126,10 @@ function ClosedQuestion(props) {
 
     /* Handle for single choice */
     const updateUserAnswersRadio = (answerId, ev) => {
+        ev.stopPropagation()
+
         if (ev.target.checked) setChecked(p => [answerId])
+        else setChecked([])
     }
 
     // This is a callback that aligns the value of this answered question
@@ -155,38 +163,38 @@ function ClosedQuestion(props) {
                 <Row className="suggestion-text-small"><Col xs="12">{message}</Col></Row>
             }
             <Row>
-                <InputGroup>
-                    {
-                        (props.question.min === 1 && props.question.max === 1) ?
-                            props.question.answers.map((answer, i) => {
-                                return <Answers
-                                    key={"ans_" + answer.id}
-                                    answer={answer}
-                                    number={i}
-                                    controlType="radio"
-                                    isChecked={checked.includes(answer.id)}
-                                    updateUserAnswers={updateUserAnswersRadio}
-                                ></Answers>
-                            }) : props.question.answers.map((answer, i) => {
-                                return <Answers
-                                    key={"ans_" + answer.id}
-                                    answer={answer}
-                                    number={i}
-                                    controlType="check"
-                                    isChecked={checked.indexOf(answer.id) > -1}
-                                    updateUserAnswers={updateUserAnswers}
-                                ></Answers>
-                            })
-                    }
-                </InputGroup>
+                {
+                    (props.question.min === 1 && props.question.max === 1) ?
+                        props.question.answers.map((answer, i) => {
+                            return <Answers
+                                key={"ans_" + answer.id}
+                                answer={answer}
+                                name={"radio_" + props.question.id}
+                                number={i}
+                                controlType="radio"
+                                isChecked={checked.includes(answer.id)}
+                                updateUserAnswers={updateUserAnswersRadio}
+                            ></Answers>
+                        }) : props.question.answers.map((answer, i) => {
+                            return <Answers
+                                key={"ans_" + answer.id}
+                                answer={answer}
+                                number={i}
+                                controlType="check"
+                                isChecked={checked.includes(answer.id)}
+                                updateUserAnswers={updateUserAnswers}
+                            ></Answers>
+                        })
+                }
             </Row>
-        </Container >
+        </Container>
     )
 }
 
 /* Open question component used in SurveyForm by the user  */
 function OpenQuestion(props) {
     const [value, setValue] = useState("")
+    const [lamp, setLamp] = useState(false)
 
     // This is a callback that aligns the value of this answered question
     // to the survey form userAnswers useEffect
@@ -219,10 +227,13 @@ function OpenQuestion(props) {
                         maxLength="200"
                         value={value}
                         placeholder="Short text answer here..."
-                        onChange={ev => setValue(ev.target.value)} />
+                        onChange={ev => {
+                            ev.preventDefault()
+                            setValue(ev.target.value)
+                        }} />
                 </Col>
             </Row>
-        </Container >
+        </Container>
     )
 }
 
@@ -236,12 +247,16 @@ function Answers(props) {
             <Row className="answer-row">
                 <Col xs="auto">{
                     props.controlType === 'check' ?
-                        <Form.Check
+                        <input
+                            type="checkbox"
                             checked={props.isChecked}
-                            onChange={ev => { handleChange(ev) }} /> :
-                        <InputGroup.Radio
-                            name={"group_" + props.questionId}
-                            onChange={ev => { handleChange(ev) }}
+                            onClick={ev => { handleChange(ev) }}
+                            onChange={ev => { }} /> :
+                        <input id={props.name + "_" + props.number}
+                            type="radio"
+                            name={props.name}
+                            onClick={ev => { handleChange(ev) }}
+                            onChange={ev => { }}
                         />
                 }</Col>
                 <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{props.number + 1}.</div></Col>

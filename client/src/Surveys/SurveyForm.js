@@ -81,11 +81,11 @@ function SurveyForm(props) {
             })
     }, [props, id])
 
-    /*
+    
     useEffect(() => {
-        alert(JSON.stringify(userAnswers))
+        // alert(JSON.stringify(userAnswers))
     }, [userAnswers])
-    */
+    
 
     return (
         <Container fluid>
