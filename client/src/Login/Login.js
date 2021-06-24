@@ -32,7 +32,7 @@ function Login(props) {
         event.preventDefault()
         try {
             const user = await API.logIn({ username, password })
-            history.push("/home")
+            history.push("/dashboard")
         } catch (err) {
             props.doLogin().catch(err => setError(err))
         }

@@ -18,6 +18,8 @@ function SurveyEditor(props) {
 
     const [isEditTitle, setIsEditTitle] = useState(false)
 
+    const history = useHistory()
+
     // Modals
     const [isConfirmation, setIsConfimation] = useState(false)
     const [isInformation, setIsInformation] = useState(false)
@@ -45,7 +47,7 @@ function SurveyEditor(props) {
     }
 
     const publishSurvey = () => {
-        API.publishSurvey(surveyTitle, questions, dayjs()).then(() => {
+        API.publishSurvey(surveyTitle, questions).then(() => {
             setIsInformation(true)
         }).catch(err => {
             setWarning({ title: "Error", text: err.message })
@@ -74,8 +76,14 @@ function SurveyEditor(props) {
                 title="The survey has been published"
                 text="You will be redirected to the dashboard page."
                 isShow={isInformation}
-                onClose={() => setIsInformation(false)}
-                onHide={() => setIsInformation(false)}
+                onClose={() => {
+                    setIsInformation(false)
+                    history.push("/dashboard")
+                }}
+                onHide={() => {
+                    setIsInformation(false)
+                    history.push("/dashboard")
+                }}
             />
             <Information
                 title={warning.title}

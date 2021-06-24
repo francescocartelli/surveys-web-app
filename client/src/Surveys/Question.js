@@ -26,8 +26,8 @@ function EditQuestion(props) {
     const moveUp = () => {
         props.setQuestions(prevQuestions => {
             return prevQuestions.map((q, i) => {
-                if (i === props.position - 1) return prevQuestions[props.position]
-                else if (i === props.position) return prevQuestions[props.position - 1]
+                if (i === props.number - 1) return prevQuestions[props.number]
+                else if (i === props.number) return prevQuestions[props.number - 1]
                 else return q
             })
         })
@@ -36,8 +36,8 @@ function EditQuestion(props) {
     const moveDown = () => {
         props.setQuestions(prevQuestions => {
             return prevQuestions.map((q, i) => {
-                if (i === props.position) return prevQuestions[props.position + 1]
-                else if (i === props.position + 1) return prevQuestions[props.position]
+                if (i === props.number) return prevQuestions[props.number + 1]
+                else if (i === props.number + 1) return prevQuestions[props.number]
                 else return q
             })
         })
@@ -49,7 +49,7 @@ function EditQuestion(props) {
                 <div className="number-box">{props.number + 1}</div>
                 <Col><p className="pt-2 mb-0">{props.question.text}</p></Col>
                 {
-                    props.position !== 0 &&
+                    props.number !== 0 &&
                     <Col xs="auto" className="pl-1 pr-0">
                         <Button onClick={() => { moveUp() }}>
                             <ArrowUpCircleFill />

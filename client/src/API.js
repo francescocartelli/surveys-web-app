@@ -6,6 +6,14 @@ async function getSurveys() {
     else throw new Error("Error in get all surveys")
 }
 
+async function getAdminSurveys() {
+    const response = await fetch('api/adminsurveys')
+    const surveys = await response.json()
+
+    if (response.ok) return surveys
+    else throw new Error("Error in get all surveys")
+}
+
 async function getSurvey(id) {
     const response = await fetch('/api/survey/' + id)
     const survey = await response.json()
@@ -85,6 +93,6 @@ async function logOut() {
 }
 
 
-const API = { getSurveys, getSurvey, publishSurvey, submitUserAnswers, logIn, getUserInfo, logOut }
+const API = { getSurveys, getAdminSurveys, getSurvey, publishSurvey, submitUserAnswers, logIn, getUserInfo, logOut }
 
 export default API

@@ -6,6 +6,7 @@ import { useParams, Redirect } from 'react-router'
 import API from '../API'
 import { ClosedQuestion, OpenQuestion } from './Question'
 import { Confirmation, Information, UserModal } from '../Modals/Modals'
+import { useHistory } from 'react-router-dom'
 
 function SurveyForm(props) {
     // Id of the survey
@@ -19,6 +20,8 @@ function SurveyForm(props) {
     const [userAnswers, setUserAnswers] = useState([])
     const [username, setUsername] = useState("")
     const [error, setError] = useState([])
+
+    const history = useHistory()
 
     // Modals
     const [isUserModal, setIsUserModal] = useState(true)
@@ -105,8 +108,14 @@ function SurveyForm(props) {
                 title="The survey has been submitted"
                 text="You will be redirected to the home page."
                 isShow={isInformation}
-                onClose={() => setIsInformation(false)}
-                onHide={() => setIsInformation(false)}
+                onClose={() => {
+                    setIsInformation(false)
+                    history.push("/home")
+                }}
+                onHide={() => {
+                    setIsInformation(false)
+                    history.push("/home")
+                }}
             />
             <Information
                 title={warning.title}

@@ -9,8 +9,10 @@ import { SurveyForm } from './Surveys/SurveyForm'
 import { SurveyEditor } from './Surveys/SurveyEditor'
 import { Login } from './Login/Login'
 import { PermissionDenied } from './PermissionDenied/PermissionDenied'
+import {Dashboard} from './Dashboard/Dashboard'
 
 import API from './API'
+import { Dash } from 'react-bootstrap-icons';
 
 function App() {
   const [user, setUser] = useState()
@@ -39,7 +41,7 @@ function App() {
           {!isAuthenticating &&
             <Route path="/login">
               {userLogged ?
-                <Redirect to="/home"></Redirect> :
+                <Redirect to="/dashboard"></Redirect> :
                 <Login></Login>}
             </Route>
           }
@@ -56,7 +58,7 @@ function App() {
                 {/* Administrator only area */}
                 <Route path="/dashboard">
                   {userLogged ?
-                    <p>Dashboard</p> :
+                    <Dashboard></Dashboard> :
                     <PermissionDenied></PermissionDenied>
                   }
                 </Route>

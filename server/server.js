@@ -124,6 +124,18 @@ app.get('/api/surveys', async (req, res) => {
   }
 })
 
+app.get('/api/adminsurveys', async (req, res) => {
+  try {
+    const idAdmin = req.user.id
+    console.log("we " + idAdmin)
+    const surveys = await dao.getAdminSurveys(idAdmin)
+    res.json(surveys)
+  } catch (error) {
+    console.log("--->" + error)
+    res.status(500).json(error)
+  }
+})
+
 app.get('/api/survey/:id', param('id').isNumeric(), async (req, res) => {
   try {
     const id = req.params.id
@@ -147,8 +159,9 @@ app.post('/api/survey', async (req, res) => {
   try {
     const survey = req.body
     const questions = survey.questions
+    const idAdmin = req.user.id
 
-    const sId = await dao.insertSurvey(survey)
+    const sId = await dao.insertSurvey(survey, idAdmin)
     for (const q of questions) {
       let qId = await dao.insertQuestion(sId, q)
       for (const a of q.answers) await dao.insertAnswer(qId, a)

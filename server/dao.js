@@ -67,6 +67,44 @@ exports.getSurveys = () => {
   })
 }
 
+exports.getSurveys = () => {
+  const sql_getSurveys = 'SELECT * FROM survey'
+
+  return new Promise((resolve, reject) => {
+    db.all(sql_getSurveys, [], (err, rows) => {
+      if (err)
+        reject(err);
+      else if (rows === undefined)
+        reject({ error: 'Empty DB!' });
+      else {
+        resolve(rows);
+      }
+    })
+  })
+}
+
+exports.getAdminSurveys = (idAdmin) => {
+  const sql_getSurveys = 'select Survey.id, Survey.title, count(Survey.id) as count ' +
+    'from Survey, CompletedSurvey ' +
+    'where Survey.id = CompletedSurvey.idSurvey and idAdmin = ? ' +
+    'group by (Survey.id) ' +
+    'order by Survey.id desc'
+
+    console.log("---->" + sql_getSurveys)
+
+  return new Promise((resolve, reject) => {
+      db.all(sql_getSurveys, [idAdmin], (err, rows) => {
+        if (err)
+          reject(err);
+        else if (rows === undefined)
+          reject({ error: 'Empty DB!' });
+        else {
+          resolve(rows);
+        }
+      })
+    })
+}
+
 const getIdSurvey = () => {
   const sql_getId = "select max(id) as num from Survey"
   return new Promise((resolve, reject) => {
@@ -89,12 +127,12 @@ const getIdQuerstion = () => {
   })
 }
 
-exports.insertSurvey = async (survey) => {
+exports.insertSurvey = async (survey, idAdmin) => {
   const surveyId = await getIdSurvey() + 1
-  const sql_query = "INSERT INTO Survey(id, title, pubdate) VALUES(?, ?, ?)"
+  const sql_query = "INSERT INTO Survey(id, title, idAdmin) VALUES(?, ?, ?)"
 
   return new Promise((resolve, reject) => {
-    db.run(sql_query, [surveyId, survey.title, survey.pubdate], (error) => {
+    db.run(sql_query, [surveyId, survey.title, idAdmin], (error) => {
       if (error) {
         reject(error)
       } else {
