@@ -9,7 +9,6 @@ import API from '../API'
 function Dashboard(props) {
     const [adminSurveys, setAdminSurveys] = useState([])
     const [error, setError] = useState("")
-
     const [user, setUser] = useState({})
 
     /* Used in private pages */
@@ -31,7 +30,7 @@ function Dashboard(props) {
         }).catch(err => {
             history.push("/login")
         })
-    }, [])
+    }, [history])
 
     return (
         wait ? <></> :

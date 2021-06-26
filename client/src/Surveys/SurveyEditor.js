@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Container, Row, Col, Button, Form, FormControl, Alert, InputGroup } from 'react-bootstrap'
-import { HashLink } from 'react-router-hash-link'
+import { Container, Row, Col, Button, Form, FormControl, Alert } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import { TrashFill, PlusCircleFill, DashCircleFill, ArrowUpCircleFill, ArrowDownCircleFill } from 'react-bootstrap-icons'
-import dayjs from 'dayjs'
+import { PlusCircleFill, DashCircleFill } from 'react-bootstrap-icons'
 
 import './style.css'
 import API from '../API'
@@ -61,7 +59,7 @@ function SurveyEditor(props) {
         API.getUserInfo().then(() => setWait(false)).catch(err => {
             history.push("/login")
         })
-    }, [])
+    }, [history])
 
     return (
         wait ? <></> :
@@ -158,8 +156,6 @@ function EditPanel(props) {
     const [error, setError] = useState("")
 
     const [newAnswerText, setNewAnswerText] = useState("")
-
-    const history = useHistory()
 
     /* QuestId is a unique id registered for each question in this client */
     /* It's used to avoid deletion error */
@@ -306,78 +302,6 @@ function EditPanel(props) {
                 </Col>
             </Row>
         </Container >
-    )
-}
-
-function Question(props) {
-    const moveUp = () => {
-        props.setQuestions(prevQuestions => {
-            return prevQuestions.map((q, i) => {
-                if (i === props.position - 1) return prevQuestions[props.position]
-                else if (i === props.position) return prevQuestions[props.position - 1]
-                else return q
-            })
-        })
-    }
-
-    const moveDown = () => {
-        props.setQuestions(prevQuestions => {
-            return prevQuestions.map((q, i) => {
-                if (i === props.position) return prevQuestions[props.position + 1]
-                else if (i === props.position + 1) return prevQuestions[props.position]
-                else return q
-            })
-        })
-    }
-
-    return (
-        <Container fluid id={"quest_" + props.question.id} className="question-container">
-            {/* Question Header */}
-            <Row className="question-row">
-                <div className="number-box">{props.position + 1}</div>
-                <Col><p className="pt-2">{props.question.text}</p></Col>
-                {
-                    props.position !== 0 &&
-                    <Col xs="auto" className="pl-1 pr-0">
-                        <Button onClick={() => { moveUp() }}>
-                            <ArrowUpCircleFill />
-                        </Button>
-                    </Col>
-                }
-                {
-                    !props.isLast &&
-                    <Col xs="auto" className="pl-1 pr-0">
-                        <Button onClick={() => { moveDown() }}>
-                            <ArrowDownCircleFill />
-                        </Button>
-                    </Col>
-                }
-                <Col xs="auto" className="pl-1 pr-0">
-                    <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
-                </Col>
-            </Row>
-            <Row>
-                {props.question.type === 0 ?
-                    <InputGroup>
-                        {props.question.answers.map((answer, i) => {
-                            return <Col sm="12" md="6" key={props.question.id + "ans" + i} className="pb-1">
-                                <Row key={"qt_" + i} className="answer-row">
-                                    <Col xs="auto">{
-                                        props.max === 1 ?
-                                            <Form.Check readOnly /> : <InputGroup.Radio readOnly />
-                                    }</Col>
-                                    <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
-                                    <Col>{answer.text}</Col>
-                                </Row>
-                            </Col>
-                        })}
-                    </InputGroup> :
-                    <Col xs="12" className="pt-1">
-                        <Form.Control readOnly as="textarea" rows={3} placeholder="Short text answer here..." />
-                    </Col>
-                }
-            </Row>
-        </Container>
     )
 }
 

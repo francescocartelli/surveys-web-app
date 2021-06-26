@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Button, Alert } from 'react-bootstrap'
 import './style.css'
-import { useParams, Redirect } from 'react-router'
+import { useHistory, useParams, Redirect } from 'react-router-dom'
 
 import API from '../API'
 import { ClosedQuestion, OpenQuestion } from './Question'
 import { Confirmation, Information, UserModal } from '../Modals/Modals'
-import { useHistory } from 'react-router-dom'
-import { PersonPlus } from 'react-bootstrap-icons'
 
 function SurveyForm(props) {
     // Id of the survey

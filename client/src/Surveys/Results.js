@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Button, Alert } from 'react-bootstrap'
-import { PersonPlus } from 'react-bootstrap-icons'
 import { useParams, Link, useHistory } from 'react-router-dom'
 
 import './style.css'
@@ -21,20 +20,19 @@ function Results(props) {
     // When submit button is clicked, those answers will be sent to database all together
     // This useState is initialized once in the useEffect of this form
     const [error, setError] = useState("")
-
     const history = useHistory()
-
     const [isLoading, setIsLoading] = useState(true)
 
-
     useEffect(() => {
-
+        setIsLoading(true)
         API.getUserInfo().then(() => {
             API.getResults(idCS).then(s => {
                 setTitle(s.title)
-                setQuestions(s.questions)
+                // Since questions is a complex object emptying the state simplifies component rerender change
+                setQuestions([])
                 setNext(s.next)
                 setUsername(s.username)
+                setQuestions(s.questions)
                 setIsLoading(false)
             }).catch((err) => {
                 setError(err.message)
@@ -42,6 +40,7 @@ function Results(props) {
         }).catch(() => {
             history.push("/login")
         })
+        setIsLoading(false)
     }, [idCS, history])
 
     return (

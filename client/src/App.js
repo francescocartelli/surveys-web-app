@@ -2,19 +2,16 @@ import './App.css';
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect, Link } from "react-router-dom"
 import { Container, Button } from 'react-bootstrap'
-import { Dash } from 'react-bootstrap-icons';
 
 import { MyNavbar } from './MyNavbar/MyNavbar'
 import { Home } from './Home/Home'
 import { SurveyForm } from './Surveys/SurveyForm'
 import { SurveyEditor } from './Surveys/SurveyEditor'
 import { Login } from './Login/Login'
-import { PermissionDenied } from './PermissionDenied/PermissionDenied'
 import { Dashboard } from './Dashboard/Dashboard'
 import { Results } from './Surveys/Results'
 
 import API from './API'
-import { propTypes } from 'react-bootstrap/esm/Image'
 
 function App() {
   const [user, setUser] = useState()
