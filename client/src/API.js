@@ -27,8 +27,8 @@ async function getSurvey(id) {
     }
 }
 
-async function getResults(idSurvey, idCompletedSurvey) {
-    const response = await fetch('/api/results/' + idSurvey + "/" + idCompletedSurvey)
+async function getResults(idCompletedSurvey) {
+    const response = await fetch('/api/results/' + idCompletedSurvey)
     const survey = await response.json()
 
     if (response.ok) return survey

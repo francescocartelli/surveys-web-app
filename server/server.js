@@ -95,7 +95,6 @@ app.post('/api/sessions', function (req, res, next) {
 
 // Logout
 app.delete('/api/sessions/current', isLoggedIn, (req, res) => {
-  console.log("logout")
   req.logout()
   res.end()
 })
@@ -103,10 +102,8 @@ app.delete('/api/sessions/current', isLoggedIn, (req, res) => {
 // Current User
 app.get('/api/sessions/current', (req, res) => {
   if (req.isAuthenticated()) {
-    console.log("islogged")
     res.status(200).json(req.user)
   } else {
-    console.log("isnotlogged")
     res.status(401).json({ error: 'Unauthenticated user!' })
   }
 })
@@ -153,12 +150,17 @@ app.get('/api/survey/:id', param('id').isNumeric(), async (req, res) => {
   }
 })
 
-app.get('/api/results/:id/:idCS', isLoggedIn, param('id').isNumeric(), async (req, res) => {
+app.get('/api/results/:idCS', isLoggedIn, param('id').isNumeric(), async (req, res) => {
   try {
-    const id = req.params.id
     const idCS = req.params.idCS
-    
+    const completedSurvey = await dao.getCompletedSurvey(idCS)
+    const id = completedSurvey.idSurvey
+
+    const getNextId = await dao.getIdCompletedNextSurvey(idCS, id)
+
     let survey = await dao.getSurvey(id)
+    survey.username = completedSurvey.username
+    survey.next = getNextId.next
     survey.questions = []
 
     const questions = await dao.getQuestions(id)
@@ -176,6 +178,7 @@ app.get('/api/results/:id/:idCS', isLoggedIn, param('id').isNumeric(), async (re
     }
     res.json(survey)
   } catch (error) {
+    console.log("we->Z" + error)
     if (error.error === "Survey not found!") res.status(404).json(error)
     else res.status(500).json(error)
   }

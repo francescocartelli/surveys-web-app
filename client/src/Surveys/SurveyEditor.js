@@ -15,8 +15,10 @@ function SurveyEditor(props) {
        database once the submit is performed */
     const [surveyTitle, setSurveyTitle] = useState(props.survey.title)
     const [questions, setQuestions] = useState([])
-
     const [isEditTitle, setIsEditTitle] = useState(false)
+
+    /* Used in private pages */
+    const [wait, setWait] = useState(true)
 
     const history = useHistory()
 
@@ -56,94 +58,93 @@ function SurveyEditor(props) {
     }
 
     useEffect(() => {
-        // alert(JSON.stringify(questions))
-    }, [questions])
-
-    useEffect(() => {
-        API.getUserInfo().catch((err) => history.push("/login"))
+        API.getUserInfo().then(() => setWait(false)).catch(err => {
+            history.push("/login")
+        })
     }, [])
 
     return (
-        <Container fluid>
-            <Confirmation
-                title="Confirm survey publication"
-                text="Are you sure you want to publish this survey?"
-                isShow={isConfirmation}
-                onConfirm={() => {
-                    setIsConfimation(false)
-                    publishSurvey()
-                }}
-                onClose={() => setIsConfimation(false)}
-                onHide={() => setIsConfimation(false)}
-            />
-            <Information
-                title="The survey has been published"
-                text="You will be redirected to the dashboard page."
-                isShow={isInformation}
-                onClose={() => {
-                    setIsInformation(false)
-                    history.push("/dashboard")
-                }}
-                onHide={() => {
-                    setIsInformation(false)
-                    history.push("/dashboard")
-                }}
-            />
-            <Information
-                title={warning.title}
-                text={warning.text}
-                isShow={isWarning}
-                onClose={() => setIsWarning(false)}
-                onHide={() => setIsWarning(false)}
-            />
-            <Row className="pt-2 pb-2">
-                <Col className="m-0">
-                    {
-                        isEditTitle ?
-                            <Form.Control
-                                type="input"
-                                placeholder="Enter survey title here"
-                                value={surveyTitle}
-                                onInput={(ev) => setSurveyTitle(ev.target.value)} /> :
-                            <h2>{surveyTitle}</h2>
-                    }
-                </Col>
-                <Col xs="auto">
-                    <Button onClick={() => setIsEditTitle(!isEditTitle)}>
-                        {isEditTitle ? "Save Title" : "Edit Title"}
-                    </Button>
-                </Col>
-            </Row>
-            {
-                questions.length === 0 &&
+        wait ? <></> :
+            <Container fluid>
+                <Confirmation
+                    title="Confirm survey publication"
+                    text="Are you sure you want to publish this survey?"
+                    isShow={isConfirmation}
+                    onConfirm={() => {
+                        setIsConfimation(false)
+                        publishSurvey()
+                    }}
+                    onClose={() => setIsConfimation(false)}
+                    onHide={() => setIsConfimation(false)}
+                />
+                <Information
+                    title="The survey has been published"
+                    text="You will be redirected to the dashboard page."
+                    isShow={isInformation}
+                    onClose={() => {
+                        setIsInformation(false)
+                        history.push("/dashboard")
+                    }}
+                    onHide={() => {
+                        setIsInformation(false)
+                        history.push("/dashboard")
+                    }}
+                />
+                <Information
+                    title={warning.title}
+                    text={warning.text}
+                    isShow={isWarning}
+                    onClose={() => setIsWarning(false)}
+                    onHide={() => setIsWarning(false)}
+                />
                 <Row className="pt-2 pb-2">
-                    <Col>
-                        <Alert variant="primary" className="text-center">
-                            You survey has no questions!<br></br>
-                            Create your first question by intereacting with the form below.<br></br>
-                            Your questions will be displayed here.
-                        </Alert>
+                    <Col className="m-0">
+                        {
+                            isEditTitle ?
+                                <Form.Control
+                                    type="input"
+                                    placeholder="Enter survey title here"
+                                    value={surveyTitle}
+                                    onInput={(ev) => setSurveyTitle(ev.target.value)} /> :
+                                <h2>{surveyTitle}</h2>
+                        }
+                    </Col>
+                    <Col xs="auto">
+                        <Button onClick={() => setIsEditTitle(!isEditTitle)}>
+                            {isEditTitle ? "Save Title" : "Edit Title"}
+                        </Button>
                     </Col>
                 </Row>
-            }
-            {
-                questions.map((question, i) => {
-                    return <EditQuestion
-                        key={"quest_" + question.id}
-                        number={i}
-                        question={question}
-                        isLast={i === questions.length - 1}
-                        setQuestions={setQuestions}
-                        removeQuestion={() => removeQuestion(i)}>
-                    </EditQuestion>
-                })
-            }
-            <Col xs="12" className="pl-0 pt-2"><h3>New Question:</h3></Col>
-            <EditPanel addQuestion={addQuestion}></EditPanel>
-            <Container fluid className="pt-2 mb-3">
-                <Col><Button className="button-wide button-tall" onClick={() => { validateSurvey() }}>Publish Survey</Button></Col>
+                {
+                    questions.length === 0 &&
+                    <Row className="pt-2 pb-2">
+                        <Col>
+                            <Alert variant="primary" className="text-center">
+                                You survey has no questions!<br></br>
+                                Create your first question by intereacting with the form below.<br></br>
+                                Your questions will be displayed here.
+                            </Alert>
+                        </Col>
+                    </Row>
+                }
+                {
+                    questions.map((question, i) => {
+                        return <EditQuestion
+                            key={"quest_" + question.id}
+                            number={i}
+                            question={question}
+                            isLast={i === questions.length - 1}
+                            setQuestions={setQuestions}
+                            removeQuestion={() => removeQuestion(i)}>
+                        </EditQuestion>
+                    })
+                }
+                <Col xs="12" className="pl-0 pt-2"><h3>New Question:</h3></Col>
+                <EditPanel addQuestion={addQuestion}></EditPanel>
+                <Container fluid className="pt-2 mb-3">
+                    <Col><Button className="button-wide button-tall" onClick={() => { validateSurvey() }}>Publish Survey</Button></Col>
+                </Container>
             </Container>
-        </Container>
     )
 }
 

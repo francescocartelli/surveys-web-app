@@ -14,7 +14,7 @@ import { Dashboard } from './Dashboard/Dashboard'
 import { Results } from './Surveys/Results'
 
 import API from './API'
-import { propTypes } from 'react-bootstrap/esm/Image';
+import { propTypes } from 'react-bootstrap/esm/Image'
 
 function App() {
   const [user, setUser] = useState()
@@ -55,25 +55,23 @@ function App() {
               <Switch>
                 <Route exact path={["/", "/home"]}>
                   {userLogged ? <Redirect to="/dashboard"></Redirect> :
-                    <Home></Home>
+                    <Home />
                   }
                 </Route>
                 <Route path="/survey/:id">
                   {userLogged ? <Redirect to="dashboard"></Redirect> :
-                    <SurveyForm></SurveyForm>
+                    <SurveyForm />
                   }
                 </Route>
                 {/* Administrator only area */}
                 <Route path="/dashboard">
-                  {userLogged ? <Dashboard></Dashboard> :
-                    <PermissionDenied></PermissionDenied>
-                  }
+                  <Dashboard />
                 </Route>
                 <Route path="/editor">
-                  <SurveyEditor survey={{ title: "New Survey", questions: [] }}></SurveyEditor>
+                  <SurveyEditor survey={{ title: "New Survey", questions: [] }} />
                 </Route>
-                <Route path="/results/:id/:idCS">
-                  <Results></Results>
+                <Route path="/results/:idCS">
+                  <Results questions={[]}/>
                 </Route>
                 <Route>
                   <Container className="text-center">

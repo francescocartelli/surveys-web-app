@@ -67,25 +67,54 @@ function EditQuestion(props) {
                 <Col xs="auto" className="pl-1 pr-0">
                     <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
                 </Col>
+                <Col xs="12">
+                    {
+                        (props.question.min !== 0 || props.question.max !== 1) &&
+                        <Row className="suggestion-text-small">
+                            {props.question.min !== 0 && <Col xs="auto" className="pr-0">Minumun of {props.question.min} answers required.</Col>}
+                            {props.question.min !== 1 && <Col xs="auto">Maximum of {props.question.max} answers allowed.</Col>}
+                        </Row>
+                    }
+                </Col>
             </Row>
             <Row>
                 {props.question.type === 0 ?
-                    <InputGroup>
-                        {props.question.answers.map((answer, i) => {
-                            return <Col sm="12" md="6" key={props.question.id + "ans" + i} className="pb-1">
-                                <Row key={"qt_" + i} className="answer-row">
-                                    <Col xs="auto">{
-                                        props.max === 1 ?
-                                            <Form.Check readOnly /> : <InputGroup.Radio readOnly />
-                                    }</Col>
-                                    <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{i + 1}.</div></Col>
-                                    <Col>{answer.text}</Col>
-                                </Row>
-                            </Col>
-                        })}
-                    </InputGroup> :
+                    <Col xs="12">
+                        {
+                            (props.question.min === 1 && props.question.max === 1) ?
+                                props.question.answers.map((answer, i) => {
+                                    return <Answers
+                                        key={"ans_" + answer.id}
+                                        answer={answer}
+                                        number={i}
+                                        controlType="radio"
+                                        readOnly={true}
+                                    ></Answers>
+                                }) : props.question.answers.map((answer, i) => {
+                                    return <Answers
+                                        key={"ans_" + answer.id}
+                                        answer={answer}
+                                        number={i}
+                                        controlType="check"
+                                        readOnly={true}
+                                    ></Answers>
+                                })
+                        }
+                    </Col> :
                     <Col xs="12" className="pt-1">
-                        <Form.Control readOnly as="textarea" rows={3} placeholder="Short text answer here..." />
+                        {
+                            props.question.min > 0 && <Row className="suggestion-text-small">
+                                <Col xs="auto" className="pr-0">This answer is necessary</Col>
+                            </Row>
+                        }
+                        <Row>
+                            <Col xs="12" className="pt-1">
+                                <Form.Control as="textarea"
+                                    rows={3}
+                                    placeholder="Short text answer here..."
+                                    disabled={true} />
+                            </Col>
+                        </Row>
                     </Col>
                 }
             </Row>

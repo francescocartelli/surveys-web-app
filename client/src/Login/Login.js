@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Form, Row, Col, Button, Alert } from "react-bootstrap";
-import { UiChecks } from "react-bootstrap-icons";
+import { CardList } from "react-bootstrap-icons";
 import { useHistory } from "react-router-dom"
 
 import "./Login.css"
@@ -46,7 +46,7 @@ function Login(props) {
             <Row className="justify-content-center vh-100">
                 <Col xs="12" sm="8" md="6" lg="4" xl="3" className="my-auto">
                     <Form className="text-center" >
-                        <UiChecks className="mb-4 icon" alt="" width="96" height="96" />
+                        <CardList className="mb-4 icon" alt="" width="96" height="96" />
                         <h2 className="text-light">Please log in</h2>
                         {
                             error && <Alert variant="danger">{error}</Alert>
