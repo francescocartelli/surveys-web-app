@@ -101,8 +101,6 @@ function ClosedQuestion(props) {
     // Is used only for max answers overloading
     const [message, setMessage] = useState("")
 
-    const [lamp, setLamp] = useState(false)
-
     /* Handle form multiple choice */
     const updateUserAnswers = (answerId, ev) => {
         ev.stopPropagation()
@@ -169,11 +167,11 @@ function ClosedQuestion(props) {
                             return <Answers
                                 key={"ans_" + answer.id}
                                 answer={answer}
-                                name={"radio_" + props.question.id}
                                 number={i}
                                 controlType="radio"
                                 isChecked={checked.includes(answer.id)}
                                 updateUserAnswers={updateUserAnswersRadio}
+                                readOnly={props.readOnly}
                             ></Answers>
                         }) : props.question.answers.map((answer, i) => {
                             return <Answers
@@ -183,6 +181,7 @@ function ClosedQuestion(props) {
                                 controlType="check"
                                 isChecked={checked.includes(answer.id)}
                                 updateUserAnswers={updateUserAnswers}
+                                readOnly={props.readOnly}
                             ></Answers>
                         })
                 }
@@ -193,8 +192,7 @@ function ClosedQuestion(props) {
 
 /* Open question component used in SurveyForm by the user  */
 function OpenQuestion(props) {
-    const [value, setValue] = useState("")
-    const [lamp, setLamp] = useState(false)
+    const [value, setValue] = useState(props.text ? props.text : "")
 
     // This is a callback that aligns the value of this answered question
     // to the survey form userAnswers useEffect
@@ -227,6 +225,7 @@ function OpenQuestion(props) {
                         maxLength="200"
                         value={value}
                         placeholder="Short text answer here..."
+                        disabled={props.readOnly}
                         onChange={ev => {
                             ev.preventDefault()
                             setValue(ev.target.value)
@@ -251,12 +250,15 @@ function Answers(props) {
                             type="checkbox"
                             checked={props.isChecked}
                             onClick={ev => { handleChange(ev) }}
-                            onChange={ev => { }} /> :
+                            onChange={ev => { }}
+                            disabled={props.readOnly}
+                        /> :
                         <input id={props.name + "_" + props.number}
                             type="radio"
-                            name={props.name}
+                            checked={props.isChecked}
                             onClick={ev => { handleChange(ev) }}
                             onChange={ev => { }}
+                            disabled={props.readOnly}
                         />
                 }</Col>
                 <Col xs="auto" className="pl-3 pr-0"><div className="number-box-answer">{props.number + 1}.</div></Col>

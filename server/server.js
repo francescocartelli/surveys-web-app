@@ -124,14 +124,12 @@ app.get('/api/surveys', async (req, res) => {
   }
 })
 
-app.get('/api/adminsurveys', async (req, res) => {
+app.get('/api/adminsurveys', isLoggedIn, async (req, res) => {
   try {
     const idAdmin = req.user.id
-    console.log("we " + idAdmin)
     const surveys = await dao.getAdminSurveys(idAdmin)
     res.json(surveys)
   } catch (error) {
-    console.log("--->" + error)
     res.status(500).json(error)
   }
 })
@@ -155,7 +153,35 @@ app.get('/api/survey/:id', param('id').isNumeric(), async (req, res) => {
   }
 })
 
-app.post('/api/survey', async (req, res) => {
+app.get('/api/results/:id/:idCS', isLoggedIn, param('id').isNumeric(), async (req, res) => {
+  try {
+    const id = req.params.id
+    const idCS = req.params.idCS
+    
+    let survey = await dao.getSurvey(id)
+    survey.questions = []
+
+    const questions = await dao.getQuestions(id)
+    for (const q of questions) {
+      const answers = await dao.getAnswers(q.id)
+      let userAnswers = null
+      if(q.type === 0) {
+        const ans = await dao.getUserClosedAnswers(q.id, idCS)
+        userAnswers = ans.map(a => a.idAnswer)
+      } else {
+        const ans = await dao.getUserOpenAnswers(q.id, idCS)
+        userAnswers = ans.text ? ans.text : ""
+      }
+      survey.questions.push({ ...q, answers, values: userAnswers })
+    }
+    res.json(survey)
+  } catch (error) {
+    if (error.error === "Survey not found!") res.status(404).json(error)
+    else res.status(500).json(error)
+  }
+})
+
+app.post('/api/survey', isLoggedIn, async (req, res) => {
   try {
     const survey = req.body
     const questions = survey.questions

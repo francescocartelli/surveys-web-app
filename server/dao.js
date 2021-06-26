@@ -67,6 +67,42 @@ exports.getSurveys = () => {
   })
 }
 
+exports.getUserClosedAnswers = (idQuestion, idCS) => {
+  const sql_query = 'select idAnswer ' +
+    'from UserClosedAnswer, Answer ' +
+    'where Answer.idQuestion = ? and idCompletedSurvey = ? ' +
+    'and Answer.id = UserClosedAnswer.idAnswer'
+
+  return new Promise((resolve, reject) => {
+    db.all(sql_query, [idQuestion, idCS], (err, rows) => {
+      if (err)
+        reject(err);
+      else if (rows === undefined)
+        reject({ error: 'Empty DB!' });
+      else {
+        resolve(rows);
+      }
+    })
+  })
+}
+
+exports.getUserOpenAnswers = (idQuestion, idCS) => {
+  const sql_query = 'SELECT text ' +
+    'from UserOpenAnswer ' +
+    'where idQuestion = ? and idCompletedSurvey = ?'
+
+  return new Promise((resolve, reject) => {
+    db.get(sql_query, [idQuestion, idCS], (err, row) => {
+      if (err)
+        reject(err)
+      else if (row === undefined)
+        reject({ error: 'Empty DB!' })
+      else
+        resolve(row)
+    })
+  })
+}
+
 exports.getSurveys = () => {
   const sql_getSurveys = 'SELECT * FROM survey'
 
@@ -84,25 +120,23 @@ exports.getSurveys = () => {
 }
 
 exports.getAdminSurveys = (idAdmin) => {
-  const sql_getSurveys = 'select Survey.id, Survey.title, count(Survey.id) as count ' +
-    'from Survey, CompletedSurvey ' +
-    'where Survey.id = CompletedSurvey.idSurvey and idAdmin = ? ' +
+  const sql_getSurveys = 'select Survey.id, Survey.title, count(CompletedSurvey.id) as count ' +
+    'from Survey left join CompletedSurvey on Survey.id = CompletedSurvey.idSurvey ' +
+    'where idAdmin = ? ' +
     'group by (Survey.id) ' +
     'order by Survey.id desc'
 
-    console.log("---->" + sql_getSurveys)
-
   return new Promise((resolve, reject) => {
-      db.all(sql_getSurveys, [idAdmin], (err, rows) => {
-        if (err)
-          reject(err);
-        else if (rows === undefined)
-          reject({ error: 'Empty DB!' });
-        else {
-          resolve(rows);
-        }
-      })
+    db.all(sql_getSurveys, [idAdmin], (err, rows) => {
+      if (err)
+        reject(err)
+      else if (rows === undefined)
+        reject({ error: 'Empty DB!' })
+      else {
+        resolve(rows)
+      }
     })
+  })
 }
 
 const getIdSurvey = () => {
@@ -116,7 +150,7 @@ const getIdSurvey = () => {
   })
 }
 
-const getIdQuerstion = () => {
+const getIdQuestion = () => {
   const sql_getId = "select max(id) as num from Question"
   return new Promise((resolve, reject) => {
     db.get(sql_getId, [], (err, row) => {
@@ -143,7 +177,7 @@ exports.insertSurvey = async (survey, idAdmin) => {
 }
 
 exports.insertQuestion = async (idSurvey, question) => {
-  const idQuestion = await getIdQuerstion() + 1
+  const idQuestion = await getIdQuestion() + 1
 
   const sql_query = "INSERT INTO Question(id, idSurvey, text, type, min, max) VALUES (?, ?, ?, ?, ?, ?)"
   return new Promise((resolve, reject) => {

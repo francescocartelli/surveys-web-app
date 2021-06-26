@@ -27,6 +27,19 @@ async function getSurvey(id) {
     }
 }
 
+async function getResults(idSurvey, idCompletedSurvey) {
+    const response = await fetch('/api/results/' + idSurvey + "/" + idCompletedSurvey)
+    const survey = await response.json()
+
+    if (response.ok) return survey
+    else {
+        if (response.status === 404)
+            throw new Error("The responses you are looking for have not been found.")
+        else
+            throw new Error("Error in get all responses")
+    }
+}
+
 async function publishSurvey(surveyTitle, questions, pubdate) {
     const response = await fetch('/api/survey', {
         method: 'POST',
@@ -93,6 +106,6 @@ async function logOut() {
 }
 
 
-const API = { getSurveys, getAdminSurveys, getSurvey, publishSurvey, submitUserAnswers, logIn, getUserInfo, logOut }
+const API = { getSurveys, getAdminSurveys, getSurvey, getResults, publishSurvey, submitUserAnswers, logIn, getUserInfo, logOut }
 
 export default API

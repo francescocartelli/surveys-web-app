@@ -59,6 +59,10 @@ function SurveyEditor(props) {
         // alert(JSON.stringify(questions))
     }, [questions])
 
+    useEffect(() => {
+        API.getUserInfo().catch((err) => history.push("/login"))
+    }, [])
+
     return (
         <Container fluid>
             <Confirmation
