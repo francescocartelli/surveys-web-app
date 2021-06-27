@@ -93,7 +93,8 @@ Description: Get a survey for a user form.
 Request body: None
 
 Responses:
-* `200 OK` (success) 
+* `200 OK` (success)
+* `404 Not Found` (the id is not correlated to any Survey)
 * `500 Internal Server Error` (generic error).
 
 Response body: An array of objects, each describing a survey, for a completed user form.
