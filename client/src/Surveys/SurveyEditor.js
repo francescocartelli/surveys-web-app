@@ -237,7 +237,7 @@ function EditPanel(props) {
                 {
                     error.length > 0 && <Col xs="12"><Alert variant="danger">
                         {
-                            error.map((e, i) => <p key={"err_message_" + i}>{e}<br /></p>)
+                            error.map((e, i) => <div key={"err_message_" + i}><p>{e}<br /></p></div>)
                         }
                     </Alert></Col>
                 }
