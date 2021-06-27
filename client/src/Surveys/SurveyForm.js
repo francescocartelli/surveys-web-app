@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Button, Alert } from 'react-bootstrap'
 import './style.css'
-import { useHistory, useParams, Redirect } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 import API from '../API'
 import { ClosedQuestion, OpenQuestion } from './Question'
@@ -23,7 +23,7 @@ function SurveyForm(props) {
     const history = useHistory()
 
     // Modals
-    const [isUserModal, setIsUserModal] = useState(true)
+    const [isUserModal, setIsUserModal] = useState(false)
     const [isConfirmation, setIsConfimation] = useState(false)
     const [isInformation, setIsInformation] = useState(false)
     const [isWarning, setIsWarning] = useState(false)
@@ -67,6 +67,7 @@ function SurveyForm(props) {
     useEffect(() => {
         API.getSurvey(id)
             .then(s => {
+                setIsUserModal(true)
                 setSurvey(s)
                 // For each answer we map an empty user answer
                 setUserAnswers((prev) => {
@@ -75,15 +76,10 @@ function SurveyForm(props) {
                     })
                 })
             }).catch(err => {
-                return <Redirect push to="/" />
+                setIsWarning(true)
+                setWarning({ title: "Survey not found", text: err.message })
             })
     }, [props, id])
-
-
-    useEffect(() => {
-        // alert(JSON.stringify(userAnswers))
-    }, [userAnswers])
-
 
     return (
         <Container fluid>
@@ -157,13 +153,23 @@ function SurveyForm(props) {
                     })
                 }
             </Row>
-            <Row className="mb-3">
-                <Col></Col>
-                <Col xs="12" md="9">
-                    <Button className="button-wide button-tall" onClick={() => validateAnswers()}>Submit Survey</Button>
-                </Col>
-                <Col></Col>
-            </Row>
+            {
+                survey.id !== undefined ?
+                    <Row className="mb-3">
+                        <Col></Col>
+                        <Col xs="12" md="9">
+                            <Button className="button-wide button-tall" onClick={() => validateAnswers()}>Submit Survey</Button>
+                        </Col>
+                        <Col></Col>
+                    </Row> :
+                    <Row className="mb-3">
+                        <Col></Col>
+                        <Col xs="12" md="9">
+                            <Button className="button-wide button-tall" onClick={() => history.push("/home")}>Go back to home</Button>
+                        </Col>
+                        <Col></Col>
+                    </Row>
+            }
         </Container>
     )
 }

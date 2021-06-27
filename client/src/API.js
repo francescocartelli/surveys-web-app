@@ -36,17 +36,17 @@ async function getResults(idCompletedSurvey) {
         if (response.status === 401)
             throw new Error("You are not authorized to see the results you requested.")
         else if (response.status === 404)
-            throw new Error("The responses you are looking for have not been found.")
+            throw new Error("The answers you are looking for were not found.")
         else
             throw new Error("Error in get all responses")
     }
 }
 
-async function publishSurvey(surveyTitle, questions, pubdate) {
+async function publishSurvey(surveyTitle, questions) {
     const response = await fetch('/api/survey', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
-        body: JSON.stringify({ title: surveyTitle, questions: questions, pubdate: pubdate })
+        body: JSON.stringify({ title: surveyTitle, questions: questions })
     })
 
     if (!response.ok) {
@@ -61,7 +61,7 @@ async function submitUserAnswers(idSurvey, username, userAnswers) {
         body: JSON.stringify({ idSurvey: idSurvey, username: username, userAnswers: userAnswers })
     })
 
-    // throw new Error("Something went wrong in answers submission.")
+    alert(JSON.stringify({ idSurvey: idSurvey, username: username, userAnswers: userAnswers }))
 
     if (!response.ok) {
         throw new Error("Something went wrong in answers submission.")
