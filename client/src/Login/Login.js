@@ -10,7 +10,7 @@ function Login(props) {
     const [loginEnabled, setLoginEnabled] = useState(false)
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [error, setError] = useState()
+    const [error, setError] = useState("")
 
     const history = useHistory()
 

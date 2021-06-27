@@ -67,40 +67,41 @@ function EditQuestion(props) {
                 <Col xs="auto" className="pl-1 pr-0">
                     <Button variant="danger" onClick={() => props.removeQuestion()}><TrashFill /></Button>
                 </Col>
-                <Col xs="12">
-                    {
-                        (props.question.min !== 0 || props.question.max !== 1) &&
-                        <Row className="suggestion-text-small">
-                            {props.question.min !== 0 && <Col xs="auto" className="pr-0">Minumun of {props.question.min} answers required.</Col>}
-                            {props.question.min !== 1 && <Col xs="auto">Maximum of {props.question.max} answers allowed.</Col>}
-                        </Row>
-                    }
-                </Col>
             </Row>
             <Row>
                 {props.question.type === 0 ?
-                    <Col xs="12">
+                    <>
                         {
-                            (props.question.min === 1 && props.question.max === 1) ?
-                                props.question.answers.map((answer, i) => {
-                                    return <Answers
-                                        key={"ans_" + props.question.id + "_" + i}
-                                        answer={answer}
-                                        number={i}
-                                        controlType="radio"
-                                        readOnly={true}
-                                    ></Answers>
-                                }) : props.question.answers.map((answer, i) => {
-                                    return <Answers
-                                        key={"ans_" + props.question.id + "_" + i}
-                                        answer={answer}
-                                        number={i}
-                                        controlType="check"
-                                        readOnly={true}
-                                    ></Answers>
-                                })
+                            (props.question.min !== 0 || props.question.max !== 1) &&
+                            <Col xs="12">
+                                <Row className="suggestion-text-small">
+                                    {props.question.min !== 0 && <Col xs="auto" className="pr-0">Minumun of {props.question.min} answers required.</Col>}
+                                    {props.question.min !== 1 && <Col xs="auto">Maximum of {props.question.max} answers allowed.</Col>}
+                                </Row>
+                            </Col>
                         }
-                    </Col> :
+                        <Col xs="12">
+                            {
+                                (props.question.min === 1 && props.question.max === 1) ?
+                                    props.question.answers.map((answer, i) => {
+                                        return <Answers
+                                            key={"ans_" + props.question.id + "_" + i}
+                                            answer={answer}
+                                            number={i}
+                                            controlType="radio"
+                                            readOnly={true}
+                                        ></Answers>
+                                    }) : props.question.answers.map((answer, i) => {
+                                        return <Answers
+                                            key={"ans_" + props.question.id + "_" + i}
+                                            answer={answer}
+                                            number={i}
+                                            controlType="check"
+                                            readOnly={true}
+                                        ></Answers>
+                                    })
+                            }
+                        </Col></> :
                     <Col xs="12" className="pt-1">
                         {
                             props.question.min > 0 && <Row className="suggestion-text-small">

@@ -25,8 +25,14 @@ function MyNavbar(props) {
 				<CardList size={24} />{' '}{appName}
 			</Navbar.Brand>
 			{props.user ?
-				<UserProfileButton user={props.user} doLogOut={doLogout} />:
-				<Link className="nav-text pr-2" to="/login">Login</Link>
+				<>
+					<Link className="nav-text pr-2" to="/dashboard">Dashboard</Link>
+					<UserProfileButton user={props.user} doLogOut={doLogout} />
+				</> :
+				<>
+					<Link className="nav-text pr-2" to="/home">Home</Link>
+					<Link className="nav-text pr-2" to="/login">Login</Link>
+				</>
 			}
 		</Navbar>
 	)

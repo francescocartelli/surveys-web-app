@@ -61,8 +61,6 @@ async function submitUserAnswers(idSurvey, username, userAnswers) {
         body: JSON.stringify({ idSurvey: idSurvey, username: username, userAnswers: userAnswers })
     })
 
-    alert(JSON.stringify({ idSurvey: idSurvey, username: username, userAnswers: userAnswers }))
-
     if (!response.ok) {
         throw new Error("Something went wrong in answers submission.")
     }
@@ -83,12 +81,8 @@ async function logIn(credentials) {
         const user = await response.json();
         return user;
     } else {
-        try {
-            const errDetail = await response.json();
-            throw errDetail.message;
-        } catch (err) {
-            throw err;
-        }
+        if (response.status === 401) throw new Error("Wrong username or password.")
+        else throw new Error("Something went wrong during your authentication.")
     }
 }
 
