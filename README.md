@@ -1,3 +1,5 @@
+# Surveys
+
 ## Routes:
 * **/**, **/home**: Homepage of the website, visibile only for unlogged users. Contains a list of published surveys.<br/> If the user is logged and browse this page it is redirect to his personal 'dashboard'.
 
@@ -18,7 +20,7 @@ Require login.
 Require unlogged session.<br/>
 Redirect to 'home' if user is logged.
 
-* **default route**: wrong page. Contains a link to the 'home' page.
+* **default route**: Wrong page. Contains a link to the 'home' page.
 
 ## API's
 ### getSurveys
@@ -30,10 +32,11 @@ Description: Get all the basic informations for the surveys to be displayed in t
 
 Request body: _None_
 
-Response: `200 OK` (success) 
-    or `500 Internal Server Error` (generic error).
+Responses: 
+* `200 OK` (success) 
+* `500 Internal Server Error` (generic error).
 
-Response body: An array of objects, each describing a survey.
+Response body: An array of objects, each one describing a survey.
 ```
 [{
     "id": 1,
@@ -56,10 +59,11 @@ Method: GET
 
 Description: Get surveys information for a specific admin.
 
-Request body: user (admin), contains id of the admin (hidden)
+Request body: user (admin), contains id of the admin (hidden). Managed by PassportJS.
 
-Response: `200 OK` (success) 
-    or `500 Internal Server Error` (generic error).
+Response:
+* `200 OK` (success) 
+* `500 Internal Server Error` (generic error).
 
 Response body: An array of objects, each describing a survey.
 ```
@@ -80,7 +84,7 @@ Response body: An array of objects, each describing a survey.
 ```
 
 ### getSurvey (surveyId)
-URL: `/api/survey/:id`
+URL: `/api/posurvey/:id`
 
 Method: GET
 
@@ -88,8 +92,9 @@ Description: Get a survey for a user form.
 
 Request body: None
 
-Response: `200 OK` (success) 
-    or `500 Internal Server Error` (generic error).
+Responses:
+* `200 OK` (success) 
+* `500 Internal Server Error` (generic error).
 
 Response body: An array of objects, each describing a survey, for a completed user form.
 ```
@@ -105,7 +110,6 @@ Response body: An array of objects, each describing a survey, for a completed us
       "type": 0,
       "min": 1,
       "max": 1,
-      "position": null,
       "answers": [
         {
           "id": 77,
@@ -145,7 +149,7 @@ Method: GET
 
 Description: Get a response for a specific CompletedSurvey.
 
-Request body: user (admin), contains id of the admin (hidden)
+Request body: user (admin), contains id of the admin (hidden). Managed by PassportJS.
 
 Response: 
 * `200 OK` (success)
@@ -167,7 +171,6 @@ Response body: A survey object with responses attached for a completed user form
       "type": 0,
       "min": 1,
       "max": 1,
-      "position": null,
       "answers": [
         {
           "id": 77,
@@ -196,7 +199,6 @@ Response body: A survey object with responses attached for a completed user form
       "type": 1,
       "min": 1,
       "max": 1,
-      "position": null,
       "answers": [],
       "values": "Toothpaste"
     },
@@ -215,6 +217,11 @@ Method: POST
 Description: Publish a new survey.
 
 Request body: new survey.
+
+Responses: 
+* `200 OK` (success)
+* `500 Internal Server Error` (generic error).
+
 ```
 {
   "title": "Market Research - Product Testing Template",
@@ -283,7 +290,7 @@ Request body: new answers.
 }
 ```
 
-Response: 
+Responses: 
 * `200 OK` (success)
 * `500 Internal Server Error` (generic error).
 
@@ -330,4 +337,58 @@ Contains a reference to a completedSurvey and A QUESTION (open question) from a 
 **eg.** *idCompletedSurvey: X, idQuestion: Y, text: Z*<br/>
 means that in the survey response X the user checked answered Z to the question Y<br/>
 
+## Main React Components
+### Answers
+Component used for displaying an answer for a closed question.</br>
+Contains a number which identifies the specific answer in a question, the text of the answers, and a control which can be a CheckBox or a RadioButton.<br>
+If answer belong to a question which has min=1 and max=1 number of answers the control is a RadioButton otherwise is a CheckBox.
+
+### ClosedQuestion
+Component used for display the survey questions.</br>
+Contains a number which identifies the question in the surveys, a text used for the question statement, a list of answers displayed by the Answers component and several other labels used for error visualization.</br>
+A question with min<>0 number of answers required, shows a message respresenting the constraint.</br>
+A question with max<>1 number of answers allowed, shows a message respresenting the constraint.</br>
+The validity, in terms of answers checked by the user, is represented by an icon.<br>
+The icon can be an exclamation mark for a invalid user response or a check sign for a correct user response.</br>
+Question can be also used for results visualization in Result component, the questions are set into readonly mode.
+
+### OpenQuestion
+Component used for display the survey questions.
+Used in SurveyForm for allowing user to respond.
+Used in Results (in readonly mode) for displaying users answers.<br>
+It contains the same components of a Closed Question, except for the answers list which is a textarea.<br>
+Open question has no upper constraint for a user response. <br> It only has min threshold of response required (1 for mandatory question, 0 for optional question).
+
+### UserForm
+Component used by a user for entering the responses in a specific form.<br>
+Shows a list of questions that can be open or closed ended.<br>
+Once a user finish the survey completion, the survey can be submitted.<br>
+If any question do not satisfied it's validity constraint an modal is displayed and an error alert shows the invalid questions.
+If all questions satisfies the constraints the survey is submitted.
+
+### Modals
+Different modals used for error or information visualization.<br>
+UserModal is also used for entering the username in a userform.
+
+### Home
+Home page for the application.<br>
+Shows a list of published surveys in a card visualization ready to be answered by a user.
+
+### Dashboard
+Home page for the admins.<br>
+Shows a list of a specific admin published surveys in a card visualization.<br>
+The card shows the survey title and the number of received responses.
+The page shows also a button that can redirect the admin to the SurveyEditor component.
+
+### SurveyEditor
+Component used by the admins for editing a new survey.<br>
+It allows the admin to create open or closed questions and answers, decide their validity contraints in terms of allowed responses.<br>
+It also allow an admin to reorder the questions and to delete an unwanted question.
+
+### Results
+Page used for displaying the user responses.<br>
+Responses are visualized one by one for each user.<br>
+Navigation throght the pages is guaranteed by a button which allow the user to go to next response. Backward navigation is achieved by the browser back button.
+
 ## Login credentials (username + password)
+
