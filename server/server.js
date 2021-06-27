@@ -156,31 +156,32 @@ app.get('/api/results/:idCS', isLoggedIn, param('id').isNumeric(), async (req, r
     const completedSurvey = await dao.getCompletedSurvey(idCS)
     const id = completedSurvey.idSurvey
 
-    const getNextId = await dao.getIdCompletedNextSurvey(idCS, id)
-
     let survey = await dao.getSurvey(id)
-    survey.username = completedSurvey.username
-    survey.next = getNextId.next
-    survey.questions = []
 
-    const questions = await dao.getQuestions(id)
-    for (const q of questions) {
-      const answers = await dao.getAnswers(q.id)
-      let userAnswers = null
-      if(q.type === 0) {
-        const ans = await dao.getUserClosedAnswers(q.id, idCS)
-        userAnswers = ans.map(a => a.idAnswer)
-      } else {
-        const ans = await dao.getUserOpenAnswers(q.id, idCS)
-        userAnswers = ans.text ? ans.text : ""
+    if (survey.idAdmin !== req.user.id) res.status(401).json("")
+    else {
+      const getNextId = await dao.getIdCompletedNextSurvey(idCS, id)
+      survey.username = completedSurvey.username
+      survey.next = getNextId.next
+      survey.questions = []
+  
+      const questions = await dao.getQuestions(id)
+      for (const q of questions) {
+        const answers = await dao.getAnswers(q.id)
+        let userAnswers = null
+        if (q.type === 0) {
+          const ans = await dao.getUserClosedAnswers(q.id, idCS)
+          userAnswers = ans.map(a => a.idAnswer)
+        } else {
+          const ans = await dao.getUserOpenAnswers(q.id, idCS)
+          userAnswers = ans.text ? ans.text : ""
+        }
+        survey.questions.push({ ...q, answers, values: userAnswers })
       }
-      survey.questions.push({ ...q, answers, values: userAnswers })
+      res.json(survey)
     }
-    res.json(survey)
   } catch (error) {
-    console.log("we->Z" + error)
-    if (error.error === "Survey not found!") res.status(404).json(error)
-    else res.status(500).json(error)
+    res.status(500).json(error)
   }
 })
 

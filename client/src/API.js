@@ -33,7 +33,9 @@ async function getResults(idCompletedSurvey) {
 
     if (response.ok) return survey
     else {
-        if (response.status === 404)
+        if (response.status === 401)
+            throw new Error("You are not authorized to see the results you requested.")
+        else if (response.status === 404)
             throw new Error("The responses you are looking for have not been found.")
         else
             throw new Error("Error in get all responses")
