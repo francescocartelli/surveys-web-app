@@ -1,5 +1,5 @@
 ## Routes:
-* **/**, **/home**: Homepage of the website, visibile only for unlogged users. Contains a list of published surveys.<br/> If the user is logged and broswe this page it is redirect to his personal 'dashboard'.
+* **/**, **/home**: Homepage of the website, visibile only for unlogged users. Contains a list of published surveys.<br/> If the user is logged and browse this page it is redirect to his personal 'dashboard'.
 
 * **/survey/:id**: Survey form for the survey specified by the id.
 
@@ -15,8 +15,279 @@ Navigation throught survey can be achieved by moving forward and backward in the
 Require login.
 
 * **/login**: Application login.<br/>
-Require unlogged sessione.<br/>
+Require unlogged session.<br/>
 Redirect to 'home' if user is logged.
+
+* **default route**: wrong page. Contains a link to the 'home' page.
+
+## API's
+### getSurveys
+URL: `/api/surveys`
+
+Method: GET
+
+Description: Get all the basic informations for the surveys to be displayed in the 'home' page.
+
+Request body: _None_
+
+Response: `200 OK` (success) 
+    or `500 Internal Server Error` (generic error).
+
+Response body: An array of objects, each describing a survey.
+```
+[{
+    "id": 1,
+    "title": "Best place for summer vacation 2021"
+    "idAdmin": 1
+  },
+  {
+    "id": 2,
+    "title": "Are you a psychopath?"
+    "idAdmin": 2
+  },
+...
+]
+```
+
+### getAdminSurvey
+URL: `/api/adminsurveys`
+
+Method: GET
+
+Description: Get surveys information for a specific admin.
+
+Request body: user (admin), contains id of the admin (hidden)
+
+Response: `200 OK` (success) 
+    or `500 Internal Server Error` (generic error).
+
+Response body: An array of objects, each describing a survey.
+```
+[{
+    "next": 8, // Id of the first result
+    "id": 1
+    "title": "Best place for summer vacation 2021"
+    "idAdmin": 1
+  },
+  {
+    "next": 45,
+    "id": 5,
+    "text": "Are you an horrible person?"
+    "idAdmin": 1
+  },
+...
+]
+```
+
+### getSurvey (surveyId)
+URL: `/api/survey/:id`
+
+Method: GET
+
+Description: Get a survey for a user form.
+
+Request body: None
+
+Response: `200 OK` (success) 
+    or `500 Internal Server Error` (generic error).
+
+Response body: An array of objects, each describing a survey, for a completed user form.
+```
+{
+  "id": 11,
+  "title": "Customer satisfaction",
+  "idAdmin": 1,
+  "questions": [
+    {
+      "id": 26,
+      "idSurvey": 11,
+      "text": "Do you often recommend a company to a friend?",
+      "type": 0,
+      "min": 1,
+      "max": 1,
+      "position": null,
+      "answers": [
+        {
+          "id": 77,
+          "idQuestion": 26,
+          "text": "Yes, i do."
+        },
+        {
+          "id": 78,
+          "idQuestion": 26,
+          "text": "No, i don't."
+        },
+        {
+          "id": 79,
+          "idQuestion": 26,
+          "text": "Sometimes, I do."
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "idSurvey": 11,
+      "text": "What is the latest product you recommended to a friend?",
+      "type": 1,
+      "min": 1,
+      "max": 1,
+      "answers": []
+    },
+    ...
+  ]
+}
+```
+
+### getResults (idCompletedSurvey)
+URL: `/api/results/:idCS`
+
+Method: GET
+
+Description: Get a response for a specific CompletedSurvey.
+
+Request body: user (admin), contains id of the admin (hidden)
+
+Response: 
+* `200 OK` (success)
+* `401 Unauthorized` (the admin manually typed the id of a survey that does not belong to him)
+* `404 Not Found` (the id is not correlated to any CompletedSurvey)
+* `500 Internal Server Error` (generic error).
+
+Response body: A survey object with responses attached for a completed user form, values is the object that contains the user answers (closed answer -> id of the answer, open answer -> text).
+```
+{
+  "id": 11,
+  "title": "Customer satisfaction",
+  "idAdmin": 1,
+  "questions": [
+    {
+      "id": 26,
+      "idSurvey": 11,
+      "text": "Do you often recommend a company to a friend?",
+      "type": 0,
+      "min": 1,
+      "max": 1,
+      "position": null,
+      "answers": [
+        {
+          "id": 77,
+          "idQuestion": 26,
+          "text": "Yes, i do."
+        },
+        {
+          "id": 78,
+          "idQuestion": 26,
+          "text": "No, i don't."
+        },
+        {
+          "id": 79,
+          "idQuestion": 26,
+          "text": "Sometimes, I do."
+        }
+      ],
+      "values": [
+        79
+      ]
+    },
+    {
+      "id": 27,
+      "idSurvey": 11,
+      "text": "What is the latest product you recommended to a friend?",
+      "type": 1,
+      "min": 1,
+      "max": 1,
+      "position": null,
+      "answers": [],
+      "values": "Toothpaste"
+    },
+    ...
+  ],
+  "username": "james ravioli",
+  "next": null
+}
+```
+
+### publishSurvey (surveyTitle, questions)
+URL: `/api/survey`
+
+Method: POST
+
+Description: Publish a new survey.
+
+Request body: new survey.
+```
+{
+  "title": "Market Research - Product Testing Template",
+  "questions": [
+    {
+      "id": 0,
+      "text": "Name the last product you bought",
+      "type": 1,
+      "answers": [],
+      "min": 1,
+      "max": 1
+    },
+    {
+      "id": 1,
+      "text": "In what category does it belong?",
+      "type": 0,
+      "answers": [
+        {
+          "text": "Electronics"
+        },
+        {
+          "text": "Automotive"
+        },
+        {
+          "text": "Self Care"
+        },
+        {
+          "text": "Other"
+        }
+      ],
+      "min": 1,
+      "max": 1
+    }
+  ]
+}
+```
+
+
+### submitUserAnswers (idSurvey, username, userAnswers)
+URL: `/api/answers`
+
+Method: POST
+
+Description: Submit user answers to a survey.
+
+Request body: new answers.
+```
+{
+  "idSurvey": "12",
+  "username": "albert",
+  "userAnswers": [
+    {
+      "id": 28,
+      "type": 1,
+      "values": "Smartphone"
+    },
+    {
+      "id": 29,
+      "type": 0,
+      "values": [
+        80
+      ]
+    },
+    ...
+  ]
+}
+```
+
+Response: 
+* `200 OK` (success)
+* `500 Internal Server Error` (generic error).
+
+Response body: None, error if status is 500.
 
 ## Database tables:
 * **Admin**: used for keeping track of the admin credentials.
