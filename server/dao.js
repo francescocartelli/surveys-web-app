@@ -28,9 +28,9 @@ exports.getCompletedSurvey = (idCS) => {
     db.get(sql_query, [idCS], (err, row) => {
       if (err)
         reject(err)
-      else if (row === undefined)
-        reject({ error: 'Survey not found!' })
-      else
+      else if (row === undefined) {
+        reject({ error: 'Results not found!' })
+      } else
         resolve(row)
     })
   })
@@ -154,10 +154,10 @@ exports.getSurveys = () => {
 
 exports.getAdminSurveys = (idAdmin) => {
   const sql_getSurveys = 'select min(CompletedSurvey.id) as next, Survey.id, Survey.title, count(CompletedSurvey.id) as count ' +
-  'from Survey left join CompletedSurvey on Survey.id = CompletedSurvey.idSurvey ' +
-  'where idAdmin = ? ' +
-  'group by (Survey.id)' +
-  'order by Survey.id desc'
+    'from Survey left join CompletedSurvey on Survey.id = CompletedSurvey.idSurvey ' +
+    'where idAdmin = ? ' +
+    'group by (Survey.id)' +
+    'order by Survey.id desc'
 
   return new Promise((resolve, reject) => {
     db.all(sql_getSurveys, [idAdmin], (err, rows) => {
@@ -241,7 +241,7 @@ const getIdCompletedSurvey = () => {
   return new Promise((resolve, reject) => {
     db.get(sql_getId, [], (err, row) => {
       if (err) reject(err)
-      else if (row === undefined) reject(err)
+      else if (row === undefined) reject("Results not found!")
       else resolve(row.num)
     })
   })

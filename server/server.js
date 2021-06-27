@@ -181,7 +181,8 @@ app.get('/api/results/:idCS', isLoggedIn, param('id').isNumeric(), async (req, r
       res.json(survey)
     }
   } catch (error) {
-    res.status(500).json(error)
+    if (error.error === "Results not found!") res.status(404).json(error)
+    else res.status(500).json(error)
   }
 })
 
