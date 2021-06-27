@@ -439,10 +439,10 @@ Navigation throght the pages is guaranteed by a button which allow the user to g
 * **veryCoolMom** - *marisa88*
 
 ### Surveys
-* **Tipical Demographic Survey**: made by *fancyPineapple* 
-* **Job Satisfaction**: mady by *fancyPineapple*
-* **Student perception survey**: made by *veryCoolMom*
-* **Electric vehicle**: made by *veryCoolMom*
-* **Film general audience**: made by *space05star*
-* **General Gaming Survey** : made by *atomicYorkshire*
+* **Tipical Demographic Survey**: made by *fancyPineapple*, 3 responses
+* **Job Satisfaction**: mady by *fancyPineapple*, 2 responses
+* **Student perception survey**: made by *veryCoolMom*, 2 response
+* **Electric vehicle**: made by *veryCoolMom*, 1 response
+* **Film general audience**: made by *space05star*, 1 response
+* **General Gaming Survey** : made by *atomicYorkshire*, 0 response
 
