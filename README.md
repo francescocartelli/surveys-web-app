@@ -22,7 +22,7 @@ Redirect to 'home' if user is logged.
 
 * **default route**: Wrong page. Contains a link to the 'home' page.
 
-## API's
+## APIs
 ### getSurveys
 URL: `/api/surveys`
 
@@ -292,9 +292,48 @@ Request body: new answers.
 
 Responses: 
 * `200 OK` (success)
-* `500 Internal Server Error` (generic error).
+* `500 Internal Server Error` (generic error)
 
 Response body: None, error if status is 500.
+
+### logIn (credentials):
+URL: `/api/sessions`
+
+Method: POST
+
+Description: Login an admin by using the provided credentials.
+
+Request body: user credentials (username and password).
+
+Responses: 
+* `200 OK` (success)
+* `401 Unauthorized` (wrong credentials).
+
+### logOut:
+URL: `/api/sessions/current`
+
+Method: DELETE
+
+Description: Logout a previously logged admin.
+
+Request body: None
+
+Responses: 
+* `200 OK` (success)
+* `500 Internal Server Error` (generic error).
+
+### getUserInfo
+URL: `/api/sessions/current`
+
+Method: GET
+
+Description: Check if admin il logged and fetch it's parameters.
+
+Request body: None
+
+Responses: 
+* `200 OK` (success)
+* `401 Unauthorized` (admin not logged in).
 
 ## Database tables:
 * **Admin**: used for keeping track of the admin credentials.
@@ -390,5 +429,20 @@ Page used for displaying the user responses.<br>
 Responses are visualized one by one for each user.<br>
 Navigation throght the pages is guaranteed by a button which allow the user to go to next response. Backward navigation is achieved by the browser back button.
 
-## Login credentials (username + password)
+### Editor Image
+
+
+## Login credentials (username - password)
+* **fancyPineapple** - *watermelon09*
+* **atomicYorkshire** - *mongodb1*
+* **space05star** - *kevin187*
+* **veryCoolMom** - *marisa88*
+
+### Surveys
+* **Tipical Demographic Survey**: made by *fancyPineapple* 
+* **Job Satisfaction**: mady by *fancyPineapple*
+* **Student perception survey**: made by *veryCoolMom*
+* **Electric vehicle**: made by *veryCoolMom*
+* **Film general audience**: made by *space05star*
+* **General Gaming Survey** : made by *atomicYorkshire*
 
