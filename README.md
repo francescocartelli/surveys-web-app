@@ -429,8 +429,8 @@ Page used for displaying the user responses.<br>
 Responses are visualized one by one for each user.<br>
 Navigation throght the pages is guaranteed by a button which allow the user to go to next response. Backward navigation is achieved by the browser back button.
 
-### Editor Image
-
+## Editor Image
+![](client/Images/surveyeditor_screenshot.png)
 
 ## Login credentials (username - password)
 * **fancyPineapple** - *watermelon09*
