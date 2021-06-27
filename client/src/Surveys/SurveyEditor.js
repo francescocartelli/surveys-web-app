@@ -163,6 +163,7 @@ function EditPanel(props) {
 
     const submitQuestion = () => {
         let newError = []
+        if(!text) newError.push("Question has no sentence.")
         if (type === 0) {
             if (answers.length < 1) newError.push("Questions with no answers are not allowed.")
             if (min > answers.length) newError.push("Answers number is lower than minimum.")
@@ -236,13 +237,13 @@ function EditPanel(props) {
                 {
                     error.length > 0 && <Col xs="12"><Alert variant="danger">
                         {
-                            error.map(e => <p>{e}<br /></p>)
+                            error.map((e, i) => <p key={"err_message_" + i}>{e}<br /></p>)
                         }
                     </Alert></Col>
                 }
                 {type === 0 ? <>
                     {answers.map((answer, i) => {
-                        return <Col sm="12" md="6" key={i} className="pb-1">
+                        return <Col sm="12" md="6" key={"ans_" + i} className="pb-1">
                             <Row>
                                 <Col xs="auto" className="pr-0">
                                     <Button onClick={() => { removeAnswer(i) }}><DashCircleFill></DashCircleFill></Button>

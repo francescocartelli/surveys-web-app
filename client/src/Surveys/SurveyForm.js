@@ -17,7 +17,7 @@ function SurveyForm(props) {
     // When submit button is clicked, those answers will be sent to database all together
     // This useState is initialized once in the useEffect of this form
     const [userAnswers, setUserAnswers] = useState([])
-    const [username, setUsername] = useState("")
+    const [username, setUsername] = useState("nameless")
     const [error, setError] = useState([])
 
     const history = useHistory()
@@ -39,7 +39,7 @@ function SurveyForm(props) {
                     errorMessage.push("Question " + (i + 1) + " require " + q.min + " answers, " + num + " were given")
                 }
             } else {
-                if(q.min > 0 && !userAnswers[i].values ) {
+                if (q.min > 0 && !userAnswers[i].values) {
                     errorMessage.push("Question " + (i + 1) + " require an answer")
                 }
             }
@@ -79,11 +79,11 @@ function SurveyForm(props) {
             })
     }, [props, id])
 
-    
+
     useEffect(() => {
         // alert(JSON.stringify(userAnswers))
     }, [userAnswers])
-    
+
 
     return (
         <Container fluid>
@@ -130,8 +130,8 @@ function SurveyForm(props) {
                     }
                 </Col>
                 <Col xs="12">
-                    <Alert variant="primary">
-                        This survey will be signed by: {username}
+                    <Alert variant="success">
+                        Your username for this survey: {username}
                     </Alert>
                 </Col>
                 {

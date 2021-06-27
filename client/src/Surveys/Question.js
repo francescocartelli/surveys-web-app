@@ -84,7 +84,7 @@ function EditQuestion(props) {
                             (props.question.min === 1 && props.question.max === 1) ?
                                 props.question.answers.map((answer, i) => {
                                     return <Answers
-                                        key={"ans_" + answer.id}
+                                        key={"ans_" + props.question.id + "_" + i}
                                         answer={answer}
                                         number={i}
                                         controlType="radio"
@@ -92,7 +92,7 @@ function EditQuestion(props) {
                                     ></Answers>
                                 }) : props.question.answers.map((answer, i) => {
                                     return <Answers
-                                        key={"ans_" + answer.id}
+                                        key={"ans_" + props.question.id + "_" + i}
                                         answer={answer}
                                         number={i}
                                         controlType="check"
