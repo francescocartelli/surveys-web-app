@@ -2,11 +2,39 @@
 <div align="center"><h1>Surveys</h1>
 	<div align="center"><p><i>Surveys web application created with React and Node.js</i></p></div>
 <div align="center">
-<a href="https://www.javascript.com/"><img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E"></a>
-<a href="https://it.reactjs.org/"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"></a>
-<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white"></a>
+<img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" href="https://www.javascript.com/">
+<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" href="https://it.reactjs.org/">
+<img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" href="https://nodejs.org/">
 	</div>
 </div>
+
+<br>
+
+## Getting started
+To get started, just set up the <b>back-end server</b> (<i>Express.js</i>) and <b>front-end server</b> (<i>React.js</i>) of the app.
+### Server
+* From the server root folder, run:
+```
+server % npm install
+```
+* Once all packages are downloaded, run:
+```
+server % npm start
+```
+The server is now running ready to be contacted by the client.
+<br>
+### Client
+* From the client root folder, run:
+```
+client % npm install
+```
+* Once all packages are downloaded, run:
+```
+client % npm start
+```
+Now you are ready to connect to the front-end server, open the browser and type in the URL of the machine running the client.
+
+<br>
 
 ## Routes:
 
@@ -18,61 +46,46 @@
 
   
 
-*  **/dashboard**: Personal 'home' for each administrator.<br/>
+*  **/dashboard**: Personal 'home' for each administrator.<br/> This page allows admin to navigate to the 'editor' and shows all the surveys published by the admin and their results. Requires login.
 
-This page allows admin to navigate to the 'editor' and shows all the surveys published by the admin and their results. <br/>
-
-Require login.
+*  **/editor**: Editor for a new survey. Allows an admin to create a new survey. Requires login.
 
   
 
-*  **/editor**: Editor for a new survey. Allows an admin to create a new survey.<br/>
-
-Require login.
+*  **/results/:idCS**: Allows an admin to display the result for a specific 'CompletedSurvey', idCS is the identifier of a survey completed by a user.<br/>Navigation throught survey can be achieved by moving forward and backward in the responses made by the users. Requires login.
 
   
 
-*  **/results/:idCS**: Allows an admin to display the result for a specific 'CompletedSurvey', idCS is the identifier of a survey completed by a user.<br/>
-
-Navigation throught survey can be achieved by moving forward and backward in the responses made by the users.<br/>
-
-Require login.
-
-  
-
-*  **/login**: Application login.<br/>
-
-Require unlogged session.<br/>
-
-Redirect to 'home' if user is logged.
+*  **/login**: Application login. Requires unlogged session. Redirect to 'home' if user is logged.
 
   
 
 *  **default route**: Wrong page. Contains a link to the 'home' page.
 
-  
+<br>
+<br>
 
 ## APIs
 
 ### getSurveys
 
-URL: `/api/surveys`
+<b>URL:</b> `/api/surveys`
 
   
 
-Method: GET
+<b>Method:</b> GET
 
   
 
-Description: Get all the basic informations for the surveys to be displayed in the 'home' page.
+<b>Description:</b> Get all the basic informations for the surveys to be displayed in the 'home' page.
 
   
 
-Request body: _None_
+<b>Request body:</b> _None_
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -80,7 +93,7 @@ Responses:
 
   
 
-Response body: An array of objects, each one describing a survey.
+<b>Response body:</b> An array of objects, each one describing a survey.
 
 ```
 
@@ -110,27 +123,27 @@ Response body: An array of objects, each one describing a survey.
 
 ```
 
-  
+<br>  
 
 ### getAdminSurvey
 
-URL: `/api/adminsurveys`
+<b>URL:</b> `/api/adminsurveys`
 
   
 
-Method: GET
+<b>Method:</b> GET
 
   
 
-Description: Get surveys information for a specific admin.
+<b>Description:</b> Get surveys information for a specific admin.
 
   
 
-Request body: user (admin), contains id of the admin (hidden). Managed by PassportJS.
+<b>Request body:</b> user (admin), contains id of the admin (hidden). Managed by PassportJS.
 
   
 
-Response:
+<b>Response:</b>
 
 *  `200 OK` (success)
 
@@ -138,7 +151,7 @@ Response:
 
   
 
-Response body: An array of objects, each describing a survey.
+<b>Response body:</b> An array of objects, each describing a survey.
 
 ```
 
@@ -172,27 +185,27 @@ Response body: An array of objects, each describing a survey.
 
 ```
 
-  
+  <br>
 
 ### getSurvey (surveyId)
 
-URL: `/api/posurvey/:id`
+<b>URL:</b> `/api/posurvey/:id`
 
   
 
-Method: GET
+<b>Method:</b> GET
 
   
 
-Description: Get a survey for a user form.
+<b>Description:</b> Get a survey for a user form.
 
   
 
-Request body: None
+<b>Request body:</b> None
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -202,7 +215,7 @@ Responses:
 
   
 
-Response body: An array of objects, each describing a survey, for a completed user form.
+<b>Response body:</b> An array of objects, each describing a survey, for a completed user form.
 
 ```
 
@@ -292,27 +305,27 @@ Response body: An array of objects, each describing a survey, for a completed us
 
 ```
 
-  
+  <br>
 
 ### getResults (idCompletedSurvey)
 
-URL: `/api/results/:idCS`
+<b>URL:</b> `/api/results/:idCS`
 
   
 
-Method: GET
+<b>Method:</b> GET
 
   
 
-Description: Get a response for a specific CompletedSurvey.
+<b>Description:</b> Get a response for a specific CompletedSurvey.
 
   
 
-Request body: user (admin), contains id of the admin (hidden). Managed by PassportJS.
+<b>Request body:</b> user (admin), contains id of the admin (hidden). Managed by PassportJS.
 
   
 
-Response:
+<b>Response:</b>
 
 *  `200 OK` (success)
 
@@ -324,7 +337,7 @@ Response:
 
   
 
-Response body: A survey object with responses attached for a completed user form, values is the object that contains the user answers (closed answer -> id of the answer, open answer -> text).
+<b>Response body:</b> A survey object with responses attached for a completed user form, values is the object that contains the user answers (closed answer -> id of the answer, open answer -> text).
 
 ```
 
@@ -426,27 +439,27 @@ Response body: A survey object with responses attached for a completed user form
 
 ```
 
-  
+  <br>
 
 ### publishSurvey (surveyTitle, questions)
 
-URL: `/api/survey`
+<b>URL:</b> `/api/survey`
 
   
 
-Method: POST
+<b>Method:</b> POST
 
   
 
-Description: Publish a new survey.
+<b>Description:</b> Publish a new survey.
 
   
 
-Request body: new survey.
+<b>Request body:</b> new survey.
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -531,19 +544,19 @@ Responses:
 
 ### submitUserAnswers (idSurvey, username, userAnswers)
 
-URL: `/api/answers`
+<b>URL:</b> `/api/answers`
 
   
 
-Method: POST
+<b>Method:</b> POST
 
   
 
-Description: Submit user answers to a survey.
+<b>Description:</b> Submit user answers to a survey.
 
   
 
-Request body: new answers.
+<b>Request body:</b> new answers.
 
 ```
 
@@ -589,7 +602,7 @@ Request body: new answers.
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -597,29 +610,29 @@ Responses:
 
   
 
-Response body: None, error if status is 500.
+<b>Response body:</b> None, error if status is 500.
 
   
 
 ### logIn (credentials):
 
-URL: `/api/sessions`
+<b>URL:</b> `/api/sessions`
 
   
 
-Method: POST
+<b>Method:</b> POST
 
   
 
-Description: Login an admin by using the provided credentials.
+<b>Description:</b> Login an admin by using the provided credentials.
 
   
 
-Request body: user credentials (username and password).
+<b>Request body:</b> user credentials (username and password).
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -629,23 +642,23 @@ Responses:
 
 ### logOut:
 
-URL: `/api/sessions/current`
+<b>URL:</b> `/api/sessions/current`
 
   
 
-Method: DELETE
+<b>Method:</b> DELETE
 
   
 
-Description: Logout a previously logged admin.
+<b>Description:</b> Logout a previously logged admin.
 
   
 
-Request body: None
+<b>Request body:</b> None
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -655,23 +668,23 @@ Responses:
 
 ### getUserInfo
 
-URL: `/api/sessions/current`
+<b>URL:</b> `/api/sessions/current`
 
   
 
-Method: GET
+<b>Method:</b> GET
 
   
 
-Description: Check if admin il logged and fetch it's parameters.
+<b>Description:</b> Check if admin il logged and fetch it's parameters.
 
   
 
-Request body: None
+<b>Request body:</b> None
 
   
 
-Responses:
+<b>Responses:</b>
 
 *  `200 OK` (success)
 
@@ -759,9 +772,11 @@ Contains a reference to a completedSurvey and A QUESTION (open question) from a 
 
 means that in the survey response X the user checked answered Z to the question Y<br/>
 
-  
+<br>
 
 ## Main React Components
+
+<br>
 
 ### Answers
 
@@ -771,7 +786,7 @@ Contains a number which identifies the specific answer in a question, the text o
 
 If answer belong to a question which has min=1 and max=1 number of answers the control is a RadioButton otherwise is a CheckBox.
 
-  
+<br>
 
 ### ClosedQuestion
 
@@ -789,7 +804,7 @@ The icon can be an exclamation mark for a invalid user response or a check sign 
 
 Question can be also used for results visualization in Result component, the questions are set into readonly mode.
 
-  
+<br>
 
 ### OpenQuestion
 
@@ -803,7 +818,7 @@ It contains the same components of a Closed Question, except for the answers lis
 
 Open question has no upper constraint for a user response. <br> It only has min threshold of response required (1 for mandatory question, 0 for optional question).
 
-  
+  <br>
 
 ### UserForm
 
@@ -817,7 +832,7 @@ If any question do not satisfied it's validity constraint an modal is displayed 
 
 If all questions satisfies the constraints the survey is submitted.
 
-  
+  <br>
 
 ### Modals
 
@@ -825,7 +840,7 @@ Different modals used for error or information visualization.<br>
 
 UserModal is also used for entering the username in a userform.
 
-  
+  <br>
 
 ### Home
 
@@ -833,7 +848,7 @@ Home page for the application.<br>
 
 Shows a list of published surveys in a card visualization ready to be answered by a user.
 
-  
+  <br>
 
 ### Dashboard
 
@@ -845,7 +860,7 @@ The card shows the survey title and the number of received responses.
 
 The page shows also a button that can redirect the admin to the SurveyEditor component.
 
-  
+  <br>
 
 ### SurveyEditor
 
@@ -855,7 +870,7 @@ It allows the admin to create open or closed questions and answers, decide their
 
 It also allow an admin to reorder the questions and to delete an unwanted question.
 
-  
+  <br>
 
 ### Results
 
@@ -865,13 +880,13 @@ Responses are visualized one by one for each user.<br>
 
 Navigation throght the pages is guaranteed by a button which allow the user to go to next response. Backward navigation is achieved by the browser back button.
 
-  
+  <br>
 
 ## Editor Image
 
 ![](client/Images/surveyeditor_screenshot.png)
 
-  
+  <br>
 
 ## Login credentials (username - password)
 
@@ -884,8 +899,9 @@ Navigation throght the pages is guaranteed by a button which allow the user to g
 *  **veryCoolMom** - *marisa88*
 
   
+  <br>
 
-### Surveys
+## Surveys
 
 *  **Tipical Demographic Survey**: made by *fancyPineapple*, 3 responses
 
