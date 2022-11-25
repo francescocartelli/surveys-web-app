@@ -96,31 +96,19 @@ Now you are ready to connect to the front-end server, open the browser and type 
 <b>Response body:</b> An array of objects, each one describing a survey.
 
 ```
-
-[{
-
-"id": 1,
-
-"title": "Best place for summer vacation 2021"
-
-"idAdmin": 1
-
-},
-
-{
-
-"id": 2,
-
-"title": "Are you a psychopath?"
-
-"idAdmin": 2
-
-},
-
-...
-
+[
+   {
+      "id":1,
+      "title":"Best place for summer vacation 2021",
+      "idAdmin":1
+   },
+   {
+      "id":2,
+      "title":"Are you a psychopath?",
+      "idAdmin":2
+   },
+   ...
 ]
-
 ```
 
 <br>  
@@ -129,19 +117,11 @@ Now you are ready to connect to the front-end server, open the browser and type 
 
 <b>URL:</b> `/api/adminsurveys`
 
-  
-
 <b>Method:</b> GET
-
-  
 
 <b>Description:</b> Get surveys information for a specific admin.
 
-  
-
 <b>Request body:</b> user (admin), contains id of the admin (hidden). Managed by PassportJS.
-
-  
 
 <b>Response:</b>
 
@@ -149,40 +129,24 @@ Now you are ready to connect to the front-end server, open the browser and type 
 
 *  `500 Internal Server Error` (generic error).
 
-  
-
-<b>Response body:</b> An array of objects, each describing a survey.
+<b>Response body:</b> An array of objects, each one describing a survey.
 
 ```
-
-[{
-
-"next": 8, // Id of the first result
-
-"id": 1
-
-"title": "Best place for summer vacation 2021"
-
-"idAdmin": 1
-
-},
-
-{
-
-"next": 45,
-
-"id": 5,
-
-"text": "Are you an horrible person?"
-
-"idAdmin": 1
-
-},
-
-...
-
+[
+   {
+      "next":8,
+      "id":1,
+      "title":"Best place for summer vacation 2021",
+      "idAdmin":1
+   },
+   {
+      "next":45,
+      "id":5,
+      "text":"Are you an horrible person?",
+      "idAdmin":1
+   },
+   ...
 ]
-
 ```
 
   <br>
@@ -218,91 +182,50 @@ Now you are ready to connect to the front-end server, open the browser and type 
 <b>Response body:</b> An array of objects, each describing a survey, for a completed user form.
 
 ```
-
 {
-
-"id": 11,
-
-"title": "Customer satisfaction",
-
-"idAdmin": 1,
-
-"questions": [
-
-{
-
-"id": 26,
-
-"idSurvey": 11,
-
-"text": "Do you often recommend a company to a friend?",
-
-"type": 0,
-
-"min": 1,
-
-"max": 1,
-
-"answers": [
-
-{
-
-"id": 77,
-
-"idQuestion": 26,
-
-"text": "Yes, i do."
-
-},
-
-{
-
-"id": 78,
-
-"idQuestion": 26,
-
-"text": "No, i don't."
-
-},
-
-{
-
-"id": 79,
-
-"idQuestion": 26,
-
-"text": "Sometimes, I do."
-
+   "id":11,
+   "title":"Customer satisfaction",
+   "idAdmin":1,
+   "questions":[
+      {
+         "id":26,
+         "idSurvey":11,
+         "text":"Do you often recommend a company to a friend?",
+         "type":0,
+         "min":1,
+         "max":1,
+         "answers":[
+            {
+               "id":77,
+               "idQuestion":26,
+               "text":"Yes, i do."
+            },
+            {
+               "id":78,
+               "idQuestion":26,
+               "text":"No, i don't."
+            },
+            {
+               "id":79,
+               "idQuestion":26,
+               "text":"Sometimes, I do."
+            }
+         ]
+      },
+      {
+         "id":27,
+         "idSurvey":11,
+         "text":"What is the latest product you recommended to a friend?",
+         "type":1,
+         "min":1,
+         "max":1,
+         "answers":[
+            
+         ]
+      },
+      ...
+   ]
 }
-
-]
-
-},
-
-{
-
-"id": 27,
-
-"idSurvey": 11,
-
-"text": "What is the latest product you recommended to a friend?",
-
-"type": 1,
-
-"min": 1,
-
-"max": 1,
-
-"answers": []
-
-},
-
-...
-
-]
-
-}
-
 ```
 
   <br>
@@ -340,103 +263,56 @@ Now you are ready to connect to the front-end server, open the browser and type 
 <b>Response body:</b> A survey object with responses attached for a completed user form, values is the object that contains the user answers (closed answer -> id of the answer, open answer -> text).
 
 ```
-
 {
-
-"id": 11,
-
-"title": "Customer satisfaction",
-
-"idAdmin": 1,
-
-"questions": [
-
-{
-
-"id": 26,
-
-"idSurvey": 11,
-
-"text": "Do you often recommend a company to a friend?",
-
-"type": 0,
-
-"min": 1,
-
-"max": 1,
-
-"answers": [
-
-{
-
-"id": 77,
-
-"idQuestion": 26,
-
-"text": "Yes, i do."
-
-},
-
-{
-
-"id": 78,
-
-"idQuestion": 26,
-
-"text": "No, i don't."
-
-},
-
-{
-
-"id": 79,
-
-"idQuestion": 26,
-
-"text": "Sometimes, I do."
-
+   "id":11,
+   "title":"Customer satisfaction",
+   "idAdmin":1,
+   "questions":[
+      {
+         "id":26,
+         "idSurvey":11,
+         "text":"Do you often recommend a company to a friend?",
+         "type":0,
+         "min":1,
+         "max":1,
+         "answers":[
+            {
+               "id":77,
+               "idQuestion":26,
+               "text":"Yes, i do."
+            },
+            {
+               "id":78,
+               "idQuestion":26,
+               "text":"No, i don't."
+            },
+            {
+               "id":79,
+               "idQuestion":26,
+               "text":"Sometimes, I do."
+            }
+         ],
+         "values":[
+            79
+         ]
+      },
+      {
+         "id":27,
+         "idSurvey":11,
+         "text":"What is the latest product you recommended to a friend?",
+         "type":1,
+         "min":1,
+         "max":1,
+         "answers":[
+            
+         ],
+         "values":"Toothpaste"
+      },
+      "..."
+   ],
+   "username":"james ravioli",
+   "next":null
 }
-
-],
-
-"values": [
-
-79
-
-]
-
-},
-
-{
-
-"id": 27,
-
-"idSurvey": 11,
-
-"text": "What is the latest product you recommended to a friend?",
-
-"type": 1,
-
-"min": 1,
-
-"max": 1,
-
-"answers": [],
-
-"values": "Toothpaste"
-
-},
-
-...
-
-],
-
-"username": "james ravioli",
-
-"next": null
-
-}
-
 ```
 
   <br>
@@ -468,75 +344,42 @@ Now you are ready to connect to the front-end server, open the browser and type 
   
 
 ```
-
 {
-
-"title": "Market Research - Product Testing Template",
-
-"questions": [
-
-{
-
-"id": 0,
-
-"text": "Name the last product you bought",
-
-"type": 1,
-
-"answers": [],
-
-"min": 1,
-
-"max": 1
-
-},
-
-{
-
-"id": 1,
-
-"text": "In what category does it belong?",
-
-"type": 0,
-
-"answers": [
-
-{
-
-"text": "Electronics"
-
-},
-
-{
-
-"text": "Automotive"
-
-},
-
-{
-
-"text": "Self Care"
-
-},
-
-{
-
-"text": "Other"
-
+   "title":"Market Research - Product Testing Template",
+   "questions":[
+      {
+         "id":0,
+         "text":"Name the last product you bought",
+         "type":1,
+         "answers":[
+            
+         ],
+         "min":1,
+         "max":1
+      },
+      {
+         "id":1,
+         "text":"In what category does it belong?",
+         "type":0,
+         "answers":[
+            {
+               "text":"Electronics"
+            },
+            {
+               "text":"Automotive"
+            },
+            {
+               "text":"Self Care"
+            },
+            {
+               "text":"Other"
+            }
+         ],
+         "min":1,
+         "max":1
+      }
+   ]
 }
-
-],
-
-"min": 1,
-
-"max": 1
-
-}
-
-]
-
-}
-
 ```
 
   
@@ -559,45 +402,25 @@ Now you are ready to connect to the front-end server, open the browser and type 
 <b>Request body:</b> new answers.
 
 ```
-
 {
-
-"idSurvey": "12",
-
-"username": "albert",
-
-"userAnswers": [
-
-{
-
-"id": 28,
-
-"type": 1,
-
-"values": "Smartphone"
-
-},
-
-{
-
-"id": 29,
-
-"type": 0,
-
-"values": [
-
-80
-
-]
-
-},
-
-...
-
-]
-
+   "idSurvey":"12",
+   "username":"albert",
+   "userAnswers":[
+      {
+         "id":28,
+         "type":1,
+         "values":"Smartphone"
+      },
+      {
+         "id":29,
+         "type":0,
+         "values":[
+            80
+         ]
+      },
+      ...
+   ]
 }
-
 ```
 
   
@@ -612,7 +435,7 @@ Now you are ready to connect to the front-end server, open the browser and type 
 
 <b>Response body:</b> None, error if status is 500.
 
-  
+  <br>
 
 ### logIn (credentials):
 
@@ -638,7 +461,7 @@ Now you are ready to connect to the front-end server, open the browser and type 
 
 *  `401 Unauthorized` (wrong credentials).
 
-  
+  <br>
 
 ### logOut:
 
@@ -664,7 +487,7 @@ Now you are ready to connect to the front-end server, open the browser and type 
 
 *  `500 Internal Server Error` (generic error).
 
-  
+  <br>
 
 ### getUserInfo
 
@@ -690,93 +513,27 @@ Now you are ready to connect to the front-end server, open the browser and type 
 
 *  `401 Unauthorized` (admin not logged in).
 
-  
+<br>  
 
 ## Database tables:
 
 *  **Admin**: used for keeping track of the admin credentials.
 
-  
+*  **Survey**: contains the information about the surveys created by the admins. Contains a reference to che admin that created it.
 
-*  **Survey**: contains the information about the surveys created by the admins.<br/>
+*  **Question**: contains the questions within the surveys. There are no tables dedicated to open or closed questions. Each question (open or closed) is contained in this table. The type column allows you to identify its type (0 -> closed, 1 -> open). Min and max columns refer to the constraints of the questions. If question is closed, min and max limit the number of possibile answers.<br/>If question is open, min refers to a mandatory or optional question, max has no purpose for open questions.<br/>Questions contains a reference to the survey where they belong. Each question belongs only to one survey. Using the same table for all types of question, simplifies ordering procedure when a survey is proposed to a user.
 
-Contains a reference to che admin that created it.
+*  **Answer**: contains the possible answers (closed answers) to a closed ended question. Each answers contains a reference to the question were it belong. One answer belongs only to a question.
 
-  
+*  **CompletedSurvey**: contains the information for a survey that has been responded to a user. Contains a non-unique username and a reference to the survey that has been answered.<br/>
 
-*  **Question**: contains the questions within the surveys.<br/>
+*  **UserClosedAnswer**: keeps track of an answer (closed answer) given by a user. Contains a reference to a completedSurvey and AN ANSWER (closed answer) from a survey.<br/> **eg.**  *idCompletedSurvey: X, idAnswer: Y* means that in the survey response X the user checked the answer Y<br/> **eg.**  *idCompletedSurvey: X, idAnswer: Z* means that in the survey response X the user checked the answer Z<br/> Answer Y and Z can belong to the same question (multiple-choice). I only keep track of true answer, if user did not checked the answer, the is not existing<br/>
 
-There are no tables dedicated to open or closed questions.<br/>
-
-Each question (open or closed) is contained in this table. The type column allows you to identify its type (0 -> closed, 1 -> open).<br/>
-
-Min and max columns refer to the constraints of the questions.<br/>
-
-If question is closed, min and max limit the number of possibile answers.<br/>
-
-If question is open, min refers to a mandatory or optional question, max has no purpose for open questions.<br/>
-
-Questions contains a reference to the survey where they belong.
-
-Each question belongs only to one survey.
-
-Using the same table for all types of question, simplifies ordering procedure when
-
-a survey is proposed to a user.
-
-  
-
-*  **Answer**: contains the possible answers (closed answers) to a closed ended question.<br/>
-
-Each answers contains a reference to the question were it belong.<br/>
-
-One answer belongs only to a question.
-
-  
-
-*  **CompletedSurvey**: contains the information for a survey that has been responded to a user.<br/>
-
-Contains a non-unique username and a reference to the survey that has been answered.<br/>
-
-  
-
-*  **UserClosedAnswer**: keeps track of an answer (closed answer) given by a user.<br/>
-
-Contains a reference to a completedSurvey and AN ANSWER (closed answer) from a survey.<br/>
-
-  
-
-**eg.**  *idCompletedSurvey: X, idAnswer: Y*<br/>
-
-means that in the survey response X the user checked the answer Y<br/>
-
-**eg.**  *idCompletedSurvey: X, idAnswer: Z*<br/>
-
-means that in the survey response X the user checked the answer Z<br/>
-
-  
-
-Answer Y and Z can belong to the same question (multiple-choice)<br/>
-
-I only keep track of true answer, if user did not checked the answer, the is not existing<br/>
-
-  
-
-*  **UserOpenAnswer**: contains the text provided by the user in an open ended question.<br/>
-
-Contains a reference to a completedSurvey and A QUESTION (open question) from a survey.<br/>
-
-  
-
-**eg.**  *idCompletedSurvey: X, idQuestion: Y, text: Z*<br/>
-
-means that in the survey response X the user checked answered Z to the question Y<br/>
+*  **UserOpenAnswer**: contains the text provided by the user in an open ended question. Contains a reference to a completedSurvey and A QUESTION (open question) from a survey.<br/> **eg.**  *idCompletedSurvey: X, idQuestion: Y, text: Z* means that in the survey response X the user checked answered Z to the question Y<br/>
 
 <br>
 
 ## Main React Components
-
-<br>
 
 ### Answers
 
